@@ -1092,10 +1092,11 @@ class AdminModel {
 		});
 	}
 
-	replyChatForum(courseId, discussId) {
+	replyChatForum(data, courseId, discussId) {
+		console.log(data, courseId, discussId);
 		return new Promise((resolve, reject) => {
 			mongo.forumDiscussion.update({ courseId: courseId, _id: discussId },
-				{ $set : {}},
+				{ $push : { replyMessage: data }},
 				(err, docs) => {
 				if (err) {
 					result = {
