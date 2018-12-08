@@ -1,0 +1,434 @@
+# Skillsgrow API
+
+Admin Token
+[Note : If userId exist it will return existing else create new token]
+{
+    method : POST,
+    Api : /admin/token,
+    Request : {
+        userId,
+        ip,
+        browser,
+        userType
+        [status { 0:active,1:inactive}] - deafult - 0
+    },
+    Response : {
+        success :
+            {
+                "result"  : true,
+                "data" : result
+            }
+        Error:
+            {
+                "result"  : false,
+                "message" : "Something went wrong.",
+                "dev"     : "ERROR MESSAGE",
+                "data"    : []
+            }
+    }
+}
+
+Admin Delete Token
+{
+    method : DELETE,
+    Api : /admin/delete-token/:userId,
+    Request url : userId,
+    Response:{
+        success:
+            {
+                "result"  : true,
+                "data" : "Token Inserted"
+            }
+        Error:
+            {
+                "result"  : false,
+                "message" : "Something went wrong.",
+                "dev"     : "ERROR MESSAGE",
+                "data"    : []
+            }
+    }
+}
+
+Image Upload
+{
+    method : POST,
+    Api : /admin/upload,
+    Header : 'x-access-token',
+    Request : {
+        image
+    },
+    Response : {
+        success :
+            {
+                "result" : true,
+                "filename" : filename,
+                "message" : "Image uploaded"
+            }
+        Error :
+            {
+                "result"  : false,
+                "message" : "Something went wrong.",
+                "dev"     : "ERROR MESSAGE",
+                "data"    : []
+            }
+    }
+}
+
+Add Admin 
+{
+    method:POST,
+    Api:/admin/add,
+    Header : 'x-access-token',
+    Request:{
+        username,   
+        password,
+        emailId,    //unique value
+        phone,
+        image,
+        rollsPermission
+        [status { 0:admin,1:subadmin}] - deafult - 1
+    },
+    Response:{
+        success:
+            {
+                "result"  : true,
+                "message" : "Added Successfully"
+            }
+        Error:
+            {
+                "result"  : false,
+                "message" : "Something went wrong.",
+                "dev"     : "ERROR MESSAGE",
+                "data"    : []
+            }
+    }
+}
+
+Admin List
+{
+    method : GET,
+    Api : /admin/list,
+    Header : 'x-access-token',
+    Request : "",
+    Response : {
+        success :
+            {
+                "result"  : true,
+                "data" : result
+            }
+        Error :
+            {
+                "result"  : false,
+                "message" : "Something went wrong.",
+                "dev"     : "ERROR MESSAGE",
+                "data"    : []
+            }
+    }
+}
+
+Admin Login
+{
+    method : POST,
+    Api : /admin/login,
+    Request : {
+        username,   //as emailid
+        password,
+    },
+    Response : {
+        success :
+            {
+                "result"  : true,
+                "data" : result
+            }
+        Error :
+            {
+                "result"  : false,
+                "message" : "Something went wrong.",
+                "dev"     : "ERROR MESSAGE",
+                "data"    : []
+            }
+    }
+}
+
+Admin Add Category
+{
+    method : POST,
+    Api : /admin/add-category,
+    Header : 'x-access-token',
+    Request : {
+        'categoryName', 
+        'categoryImg',	
+        'createdBy',	//user id	
+        'status'	    //0-active 1-inactive	
+    },
+    Response : {
+        success :
+            {
+                "result"  : true,
+                "data" : result
+            }
+        Error :
+            {
+                "result"  : false,
+                "message" : "Something went wrong.",
+                "dev"     : "ERROR MESSAGE",
+                "data"    : []
+            }
+    }
+}
+
+Admin Update Category
+{
+    method : PUT,
+    Api : /admin/update-category,
+    Header : 'x-access-token',
+    Request : {
+        'categoryName', 
+        'categoryImg',		
+        'status'	    //0-active 1-inactive	
+    },
+    Response : {
+        success :
+            {
+                "result"  : true,
+                "data" : result
+            }
+        Error :
+            {
+                "result"  : false,
+                "message" : "Something went wrong.",
+                "dev"     : "ERROR MESSAGE",
+                "data"    : []
+            }
+    }
+}
+
+Admin List Categories
+{
+    method : GET,
+    Api : /admin/list-categories,
+    Header : 'x-access-token',
+    Request : {
+        'categoryName', 
+        'categoryImg',		
+        'status'	    //0-active 1-inactive	
+    },
+    Response : {
+        success :
+            {
+                "result"  : true,
+                "data" : result
+            }
+        Error :
+            {
+                "result"  : false,
+                "message" : "Something went wrong.",
+                "dev"     : "ERROR MESSAGE",
+                "data"    : []
+            }
+    }
+}
+
+Admin Get Category Details
+{
+    method : GET,
+    Api : /admin/get-category-details/:catid, //catid = category id
+    Header : 'x-access-token',
+    Request : "",
+    Response : {
+        success :
+            {
+                "result"  : true,
+                "data" : result
+            }
+        Error :
+            {
+                "result"  : false,
+                "message" : "Something went wrong.",
+                "dev"     : "ERROR MESSAGE",
+                "data"    : []
+            }
+    }
+}
+
+Admin Delete Category
+{
+    method : DELETE,
+    Api : /admin/delete-category/:catid, //catid = category id
+    Header : 'x-access-token',
+    Request : "",
+    Response : {
+        success :
+            {
+                "result"  : true,
+                "data" : result
+            }
+        Error :
+            {
+                "result"  : false,
+                "message" : "Something went wrong.",
+                "dev"     : "ERROR MESSAGE",
+                "data"    : []
+            }
+    }
+}
+
+Admin Add Course
+{
+    method : POST,
+    Api : /admin/add-course,
+    Header : 'x-access-token',
+    Request : {
+        "categoryId",  
+        "courseName",  
+        "description",   
+        "shortDescription", 
+        "imageLarge",  
+        "imageSmall",  
+        "video",      
+        "createdBy",    
+        "status"    //0-active , 1-inactive
+    },
+    Response : {
+        success :
+            {
+                "result"  : true,
+                "data" : result
+            }
+        Error :
+            {
+                "result"  : false,
+                "message" : "Something went wrong.",
+                "dev"     : "ERROR MESSAGE",
+                "data"    : []
+            }
+    }
+}
+
+Admin Update Course
+{
+    method : PUT,
+    Api : /admin/update-course,
+    Header : 'x-access-token',
+    Request : {
+        "courseId",  
+        "courseName",  
+        "description",   
+        "shortDescription", 
+        "imageLarge",  
+        "imageSmall",  
+        "video",          
+        "status"    //0-active , 1-inactive
+    },
+    Response : {
+        success :
+            {
+                "result"  : true,
+                "data" : result
+            }
+        Error :
+            {
+                "result"  : false,
+                "message" : "Something went wrong.",
+                "dev"     : "ERROR MESSAGE",
+                "data"    : []
+            }
+    }
+}
+
+Admin Get Course Details
+{
+    method : GET,
+    Api : /get-course-details/:courseid     //courseid
+    Header : 'x-access-token',
+    Request : "",
+    Response : {
+        success :
+            {
+                "result"  : true,
+                "data" : result
+            }
+        Error :
+            {
+                "result"  : false,
+                "message" : "Something went wrong.",
+                "dev"     : "ERROR MESSAGE",
+                "data"    : []
+            }
+    }
+}
+
+Admin List Course
+{
+    method : GET,
+    Api : /admin/list-course,
+    Header : 'x-access-token',
+    Request : "",
+    Response : {
+        success :
+            {
+                "result"  : true,
+                "data" : result
+            }
+        Error :
+            {
+                "result"  : false,
+                "message" : "Something went wrong.",
+                "dev"     : "ERROR MESSAGE",
+                "data"    : []
+            }
+    }
+}
+
+Admin Delete Course
+{
+    method : DELETE,
+    Api : /delete-course/:courseid     //courseid
+    Header : 'x-access-token',
+    Request : "",
+    Response : {
+        success :
+            {
+                "result"  : true,
+                "data" : result
+            }
+        Error :
+            {
+                "result"  : false,
+                "message" : "Something went wrong.",
+                "dev"     : "ERROR MESSAGE",
+                "data"    : []
+            }
+    }
+}
+
+Admin Add Updated Course
+{
+    method : POST,
+    Api : /admin/add-updated-course,
+    Header : 'x-access-token',
+    Request : {
+        'courseId',
+        'courseName',
+        'description',  
+        'shortDescription',
+        'imageLarge',
+        'imageSmall',
+        'video',		
+        'updatedBy'	    //user id
+    },
+    Response : {
+        success :
+            {
+                "result"  : true,
+                "data" : result
+            }
+        Error :
+            {
+                "result"  : false,
+                "message" : "Something went wrong.",
+                "dev"     : "ERROR MESSAGE",
+                "data"    : []
+            }
+    }
+}
