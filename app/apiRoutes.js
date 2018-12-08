@@ -12,28 +12,77 @@ class ApiRoute{
 		app.use('/docs', api);
 		app.use('/admin', administrator);
 	}
-	webSocket(io, app){
+
+	webSocket(io){
+		let room = '';
 		io.on('connection',(socket) => {
 			console.log('made socket connection', socket.id);
+			
 			socket.on('sendCourseId', (courseId) => {
-				// console.log(this.chat.getChatHistory(courseId));
+				socket.join('room-' + courseId);
 				this.chat.getChatHistory(courseId).then((response) => {
 					if (response.result) {
-						io.sockets.emit('chatHistory', this.chat.getChatHistory(response));
+						io.sockets.in("room-" + courseId).emit('chatHistory', response);
 					} else {
-						io.sockets.emit('chatHistory', this.chat.getChatHistory(response));
+						io.sockets.in("room-" + courseId).emit('chatHistory', response);
 					}
 				}, (reject) => {
-					io.sockets.emit('chatHistory', this.chat.getChatHistory(reject));
+					io.sockets.in("room-" + courseId).emit('chatHistory', reject);
 				});	
 			});	
 			socket.on('storeChatMessage', (data) => {
-				this.chat.addChatForum(data);
-				// io.sockets.emit('chatHistory', this.chat.getChatHistory(courseId));
+				if(data.discussionData.hasOwnProperty('position')){
+					this.chatReplyMessage(data, io);
+				}else{
+					this.chatStoreMessage(data, io);
+				}
 			});	
-			
 		})
 		
+	}
+
+	chatReplyMessage(data, io){
+		this.chat.replyChatForum(data)
+		.then((addResponse) => {
+			if (addResponse.result) {
+				this.chat.getChatHistory(data.courseId)
+				.then((response) => {
+					if (response.result) {
+						io.sockets.in("room-" + data.courseId).emit('chatHistory', response);
+					} else {
+						io.sockets.in("room-" + data.courseId).emit('chatHistory', response);
+					}
+				}, (reject) => {
+					io.sockets.in("room-" + data.courseId).emit('chatHistory', reject);
+				});	
+			} else {
+				io.sockets.in("room-" + data.courseId).emit('chatHistory', addResponse);
+			}
+		}, (reject) => {
+			io.sockets.in("room-" + data.courseId).emit('chatHistory', reject);
+		});
+	}
+
+	chatStoreMessage(data, io){
+		this.chat.addChatForum(data)
+		.then((addResponse) => {
+			if (addResponse.result) {
+				this.chat.getChatHistory(data.courseId)
+				.then((response) => {
+					if (response.result) {
+						io.sockets.in("room-" + data.courseId).emit('chatHistory', response);
+					} else {
+						io.sockets.in("room-" + data.courseId).emit('chatHistory', response);
+					}
+				}, (reject) => {
+					io.sockets.in("room-" + data.courseId).emit('chatHistory', reject);
+				});	
+			} else {
+				io.sockets.in("room-" + data.courseId).emit('chatHistory', addResponse);
+			}
+		}, (reject) => {
+			io.sockets.in("room-" + data.courseId).emit('chatHistory', reject);
+		});
 	}
 }
 

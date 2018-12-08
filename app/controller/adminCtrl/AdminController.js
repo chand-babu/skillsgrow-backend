@@ -1598,59 +1598,6 @@ class AdminController {
 			}
 		})
 	}
-
-	// created by chand
-
-	addChatForum(req, res) {
-		let data = {
-			courseId: req.body.courseId,
-			userId: req.body.userId,
-			userName: req.body.userName,
-			chatMessage: req.body.chatMessage,
-			replyMessage: req.body.replyMessage,
-			createdOn: req.body.createdOn
-		}
-		this.admin.addChatForum(data)
-		.then((response) => {
-			if (response.result) {
-				res.send(response);
-			} else {
-				res.send(response);
-			}
-		}, (reject) => {
-			res.send(reject)
-		});
-	}
-
-	getChatForum(req, res) {
-		let courseId = req.params.courseId;
-		this.admin.getChatForum(courseId)
-		.then((response) => {
-			if (response.result) {
-				res.send(response);
-			} else {
-				res.send(response);
-			}
-		}, (reject) => {
-			res.send(reject)
-		});
-	}
-
-	replyChatForum(req, res) {
-		let courseId = req.params.courseId;
-		let discussId = req.params.discussId;
-		this.admin.replyChatForum(courseId, discussId)
-		.then((response) => {
-			if (response.result) {
-				res.send(response);
-			} else {
-				res.send(response);
-			}
-		}, (reject) => {
-			res.send(reject)
-		});
-	}
-
 }
 
 module.exports = AdminController;

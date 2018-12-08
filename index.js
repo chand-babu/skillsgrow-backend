@@ -20,13 +20,11 @@ var ApiRoutes = require('./app/apiRoutes');
 var fs = require('fs');
 var http = require('http');
 var https = require('https');
-var privateKey = fs.readFileSync('privatekey.pem', 'utf8');
-var certificate = fs.readFileSync('certificate.pem', 'utf8');
-var credentials = { key: privateKey, cert: certificate };
+// var privateKey = fs.readFileSync('privatekey.pem', 'utf8');
+// var certificate = fs.readFileSync('certificate.pem', 'utf8');
+// var credentials = { key: privateKey, cert: certificate };
 var httpServer = http.createServer(app);
-var httpsServer = https.createServer(credentials, app);
-
-
+// var httpsServer = https.createServer(credentials, app);
 
 // Set header
 app.use(function (req, res, next) {
@@ -57,18 +55,6 @@ app.use(bodyParser.json({ limit: '50mb' }));
 // parse application/x-www-form-urlencoded
 
 app.use('/upload', express.static(__dirname + '/upload'));
-// connect to database
-/* mongoose.connect(db.MONGO_CONNECT_URL,db.MONGO_CLIENT,db.ERROR_FUN); */
-
-
-// console.log(mongoose.connection.readyState);
-
-// call the route file
-
-/* app.use(function (req, res, next) {
-	req.session = { payu: 'hello'};
-	next();
-}); */
 
 new ApiRoutes().routes(app);
 
@@ -76,4 +62,4 @@ const server = app.listen(port);
 //httpServer.listen(8443);
 //httpsServer.listen(8080);
 let io = socket(server);
-new ApiRoutes().webSocket(io,app);
+new ApiRoutes().webSocket(io);
