@@ -1016,12 +1016,11 @@ class AdminModel {
 					//console.log(result);
 					resolve(result);
 				}
-			})
+			});
 		});
 	}
 
 	changePassword(data) {
-		console.log(data._id);
 		return new Promise((resolve, reject) => {
 			mongo.register.update({ _id: data._id }, { $set: data }, (err, docs) => {
 				if (err) {
@@ -1093,7 +1092,6 @@ class AdminModel {
 	}
 
 	replyChatForum(data, courseId, discussId) {
-		console.log(data, courseId, discussId);
 		return new Promise((resolve, reject) => {
 			mongo.forumDiscussion.update({ courseId: courseId, _id: discussId },
 				{ $push : { replyMessage: data }},
