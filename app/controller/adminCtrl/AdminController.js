@@ -1534,14 +1534,18 @@ class AdminController {
 	}
 
 	getRegister(req, res) {
-		mongo.register.find({}, { _id: 1, userName: 1, emailId: 1, address: 1,
-		 gender: 1, phone: 1, profilePic:1, active: 1, createdOn: 1 }, (err, user) => {
+		mongo.register.find({}, { _id: 1, userName: 1, emailId: 1, 
+			phone: 1, profilePic:1, courseEnrolled:1 }).lean()
+		 .exec((err, user) => {
 			if (err) {
 				res.json({
 					"result": false,
 					"message": "something went wrong"
 				});
 			} else {
+				user.filter((userDetails) => {
+					userDetails.courseEnrolled = userDetails.courseEnrolled.length;
+				});
 				res.json({
 					"result": true,
 					"data": user
