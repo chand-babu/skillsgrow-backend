@@ -63,6 +63,50 @@ class AdminModel {
 		});
 	}
 
+	adminChangePwd(data) {
+		return new Promise((resolve, reject) => {
+			mongo.admin.findOne({ '_id': data.id }, (err, docs) => {
+
+				if (!err) {
+					var hashPwd = (docs != null) ? base.validPassword(data.pwd, docs) : false;
+					if (!hashPwd) {
+						result = {
+							"result": false,
+							"message": "password not matched"
+						}
+						reject(result);
+					} else {
+						docs.password = base.hashPassword(data.newpwd);
+						docs.save(function(err) {
+							if (err) {
+								result = {
+									"result": false,
+									"message": "Something went wrong"
+								}
+								reject(result);
+							} else {
+								result = {
+									"result": true,
+									"message": "Done successfully"
+								}
+								resolve(result);
+							}
+						});
+					}
+
+				} else {
+					result = {
+						result: false,
+						dev: err,
+						message: "something went wrong"
+					}
+					reject(result);
+				}
+
+			});
+		});
+	}
+
 	webLogin(data) {
 		return new Promise((resolve, reject) => {
 			mongo.register.findOne({ 'emailId': data.emailId }, (err, docs) => {
@@ -186,7 +230,7 @@ class AdminModel {
 						"message": "something went wrong"
 					};
 					//console.log(result);
-					resolve(result);
+					reject(result);
 				} else {
 					result = {
 						"result": true,
@@ -903,7 +947,77 @@ class AdminModel {
 		});
 	}
 
+	getBannerImages(id) {
+		return new Promise((resolve, reject) => {
+			mongo.bannerImages.find({ _id : id }, (err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					//console.log(result);
+					reject(result);
+				} else {
+					result = {
+						"result": true,
+						"data": docs
+					};
+					//console.log(result);
+					resolve(result);
+				}
+			})
+		});
+	}
+
+	deleteBannerImages(id) {
+		return new Promise((resolve, reject) => {
+			mongo.bannerImages.remove({ _id: id})
+			.exec((err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					//console.log(result);
+					reject(result);
+				} else {
+					result = {
+						"result": true,
+						"data": docs
+					};
+					//console.log(result);
+					resolve(result);
+				}
+			})
+		});
+	}
+
 	updateBannerImages(data) {
+		return new Promise((resolve, reject) => {
+			mongo.bannerImages.update({ _id: data.id }, { $set: data }, (err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					//console.log(result);
+					reject(result);
+				} else {
+					result = {
+						"result": true,
+						"data": docs
+					};
+					//console.log(result);
+					resolve(result);
+				}
+			})
+		});
+	}
+
+	updateBannerImagesDetails(data) {
 		return new Promise((resolve, reject) => {
 			mongo.bannerImages.update({ _id: data.id }, { $set: data }, (err, docs) => {
 				if (err) {

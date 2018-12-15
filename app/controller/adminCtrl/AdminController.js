@@ -1,4 +1,5 @@
 //var express = require("express");
+var mongoose = require('mongoose');
 var AdminModule = require("../../model/adminMdl/AdminModel");
 var base = require("../baseController");
 var jwt = require('jsonwebtoken');
@@ -100,6 +101,24 @@ class AdminController {
 		}
 
 		this.admin.adminLogin(data)
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject);
+			});
+	}
+
+	adminChangePwd(req, res) {
+		var data = {
+			"id": req.body.id,
+			"pwd": req.body.pwd,
+			"newpwd": req.body.newpwd
+		}
+		this.admin.adminChangePwd(data)
 			.then((response) => {
 				if (response.result) {
 					res.send(response);
@@ -761,8 +780,42 @@ class AdminController {
 				} else {
 					res.send(response);
 				}
+				mongoose.disconnect();
 			}, (reject) => {
-				res.send(reject)
+				res.send(reject);
+				mongoose.disconnect();
+			});
+	}
+
+	deleteBannerImages(req, res) {
+		let id = req.params.id;
+		this.admin.deleteBannerImages(id)
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+				mongoose.disconnect();
+			}, (reject) => {
+				res.send(reject);
+				mongoose.disconnect();
+			});
+	}
+
+	getBannerImages(req, res) {
+		let id = req.params.id;
+		this.admin.getBannerImages(id)
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+				mongoose.disconnect();
+			}, (reject) => {
+				res.send(reject);
+				mongoose.disconnect();
 			});
 	}
 
@@ -774,8 +827,10 @@ class AdminController {
 				} else {
 					res.send(response);
 				}
+				mongoose.disconnect();
 			}, (reject) => {
-				res.send(reject)
+				res.send(reject);
+				mongoose.disconnect();
 			});
 	}
 
@@ -786,6 +841,28 @@ class AdminController {
 		};
 
 		this.admin.updateBannerImages(data)
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject)
+			});
+	}
+
+	updateBannerImagesDetails(req, res) {
+		var data = {
+			'id': req.body.id,
+			'imageTitle': req.body.imageTitle,
+			'image': req.body.image,
+			'description': req.body.description,
+			'link': req.body.link,
+			'status': 0
+		};
+
+		this.admin.updateBannerImagesDetails(data)
 			.then((response) => {
 				if (response.result) {
 					res.send(response);
@@ -852,7 +929,8 @@ class AdminController {
 					token = buf.toString('hex');
 				});
 			},
-			mongo.register.findOne({ resetPasswordToken: req.params.token }).select().exec(function (err, user) {
+			mongo.register.findOne({ resetPasswordToken: req.params.token }).select()
+			.exec(function (err, user) {
 				if (err) throw err;
 				if (user) {
 					res.json({ success: true, data: user });
@@ -1543,9 +1621,6 @@ class AdminController {
 					"message": "something went wrong"
 				});
 			} else {
-				user.filter((userDetails) => {
-					userDetails.courseEnrolled = userDetails.courseEnrolled.length;
-				});
 				res.json({
 					"result": true,
 					"data": user

@@ -17,8 +17,12 @@ router.post("/add", function(req , res){
 });
 
 router.post("/login", productionOrDevelopment, function(req , res){
-    console.log(req.originalUrl, req.headers['production-mode']);
+    // console.log(req.originalUrl, req.headers['production-mode']);
     new AdminController().adminLogin(req , res);
+});
+
+router.post("/admin-change-pwd", productionOrDevelopment, function(req , res){
+    new AdminController().adminChangePwd(req , res);
 });
 
 router.post("/token", productionOrDevelopment, function(req , res){
@@ -163,8 +167,20 @@ router.get("/list-banner-images", productionOrDevelopment, function(req , res){
     new AdminController().listBannerImages(req , res);
 });
 
+router.delete("/banner-images/:id", productionOrDevelopment, function(req , res){
+    new AdminController().deleteBannerImages(req , res);
+});
+
+router.get("/banner-images/:id", productionOrDevelopment, function(req , res){
+    new AdminController().getBannerImages(req , res);
+});
+
 router.put("/update-bannerImages",tokenAuth, function(req , res){
     new AdminController().updateBannerImages(req , res);
+});
+
+router.put("/update-images",tokenAuth, function(req , res){
+    new AdminController().updateBannerImagesDetails(req , res);
 });
 
 router.put("/resetpassword", productionOrDevelopment, function(req, res, next){
