@@ -66,30 +66,41 @@ class AdminController {
 			"password": pwd,
 			"emailId": req.body.emailId,
 			"phone": req.body.phone,
-			"image": req.body.image,
 			"rollsPermission": req.body.rollsPermission,
 			"status": 1,
 		}
-		var token = req.headers['x-access-token'];
-		if (!token) return res.status(401).send({ result: false, message: 'No token provided.' });
-
-		jwt.verify(token, tokenKey, (err, decoded) => {
-			//console.log(err);
-			if (err) {
-				return res.status(500).send({ result: false, message: 'Failed to authenticate token.' });
+		this.admin.addAdministrator(data, res)
+		.then((response) => {
+			if (response.result) {
+				res.send(response);
 			} else {
-				this.admin.addAdministrator(data, res)
-					.then((response) => {
-						if (response.result) {
-							res.send(response);
-						} else {
-							res.send(response);
-						}
-
-					}, (reject) => {
-						res.send(reject);
-					});
+				res.send(response);
 			}
+
+		}, (reject) => {
+			res.send(reject);
+		});
+	}
+
+	updateAdministrator(req, res) {
+		var data = {
+			"id": req.body._id,
+			"username": req.body.username,
+			"emailId": req.body.emailId,
+			"phone": req.body.phone,
+			"rollsPermission": req.body.rollsPermission,
+			"status": req.body.status
+		}
+		this.admin.updateAdministrator(data, res)
+		.then((response) => {
+			if (response.result) {
+				res.send(response);
+			} else {
+				res.send(response);
+			}
+
+		}, (reject) => {
+			res.send(reject);
 		});
 	}
 
@@ -150,26 +161,46 @@ class AdminController {
 	}
 
 	adminList(req, res) {
-		var token = req.headers['x-access-token'];
-		if (!token) return res.status(401).send({ result: false, message: 'No token provided.' });
-
-		jwt.verify(token, tokenKey, (err, decoded) => {
-			//console.log(err);
-			if (err) {
-				return res.status(500).send({ result: false, message: 'Failed to authenticate token.' });
+		this.admin.adminList()
+		.then((response) => {
+			if (response.result) {
+				res.send(response);
 			} else {
-				this.admin.adminList()
-					.then((response) => {
-						if (response.result) {
-							res.send(response);
-						} else {
-							res.send(response);
-						}
-
-					}, (reject) => {
-						res.send(reject);
-					});
+				res.send(response);
 			}
+
+		}, (reject) => {
+			res.send(reject);
+		});
+	}
+
+	adminGet(req, res) {
+		let id = req.params.id;
+		this.admin.adminGet(id)
+		.then((response) => {
+			if (response.result) {
+				res.send(response);
+			} else {
+				res.send(response);
+			}
+
+		}, (reject) => {
+			res.send(reject);
+		});
+	}
+
+	adminDelete(req, res) {
+		let id = req.params.id;
+		this.admin.adminDelete(id)
+		.then((response) => {
+			if (response.result) {
+				res.send(response);
+			} else {
+				res.send(response);
+			}
+
+		}, (reject) => {
+			res.send(reject);
 		});
 	}
 
@@ -1676,6 +1707,85 @@ class AdminController {
 				});
 			}
 		})
+	}
+
+	//created by chand
+	addRollsPermissions(req, res) {
+		var data = {
+			title : req.body.title,
+			permissions : req.body.permissions,
+			status : 0
+		}
+		this.admin.addRollsPermissions(data)
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject);
+			});
+	}
+
+	updateRollsPermissions(req, res) {
+		var data = {
+			id : req.body.id,
+			title : req.body.title,
+			permissions : req.body.permissions,
+			status : 0
+		}
+		this.admin.updateRollsPermissions(data)
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject);
+			});
+	}
+
+	listRollsPermissions(req, res) {
+		this.admin.listRollsPermissions()
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject);
+			});
+	}
+
+	deleteRollsPermissions(req, res) {
+		let id = req.params.id;
+		this.admin.deleteRollsPermissions(id)
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject);
+			});
+	}
+
+	getRollsPermissions(req, res) {
+		let id = req.params.id;
+		this.admin.getRollsPermissions(id)
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject);
+			});
 	}
 }
 

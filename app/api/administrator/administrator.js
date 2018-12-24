@@ -16,6 +16,10 @@ router.post("/add", function(req , res){
     new AdminController().addAdministrator(req , res);
 });
 
+router.put("/add", function(req , res){
+    new AdminController().updateAdministrator(req , res);
+});
+
 router.post("/login", productionOrDevelopment, function(req , res){
     // console.log(req.originalUrl, req.headers['production-mode']);
     new AdminController().adminLogin(req , res);
@@ -29,8 +33,16 @@ router.post("/token", productionOrDevelopment, function(req , res){
     new AdminController().adminToken(req , res);
 });
 
-router.get("/list", function(req , res){
+router.get("/add", function(req , res){
     new AdminController().adminList(req, res);
+});
+
+router.get("/add/:id", function(req , res){
+    new AdminController().adminGet(req, res);
+});
+
+router.delete("/add/:id", function(req , res){
+    new AdminController().adminDelete(req, res);
 });
 
 router.delete("/delete-token/:userId", function(req , res){
@@ -321,20 +333,24 @@ router.delete("/course-delete/:id", productionOrDevelopment, function(req, res){
 });
 
 //created by chand
-// rebuild api for disscussion forum (chat)
-router.post("/chatForum", productionOrDevelopment, function(req , res){
-    // console.log(req.originalUrl, req.headers['production-mode']);
-    new AdminController().addChatForum(req , res);
+router.post("/rolls-permissions", function(req, res){
+    new AdminController().addRollsPermissions(req, res);
 });
 
-router.get("/chatForum/:courseId", productionOrDevelopment, function(req , res){
-    // console.log(req.originalUrl, req.headers['production-mode']);
-    new AdminController().getChatForum(req , res);
+router.put("/rolls-permissions", function(req, res){
+    new AdminController().updateRollsPermissions(req, res);
 });
 
-router.put("/chatForum/:courseId/:discussId", productionOrDevelopment, function(req , res){
-    // console.log(req.originalUrl, req.headers['production-mode']);
-    new AdminController().replyChatForum(req , res);
+router.get("/rolls-permissions", function(req, res){
+    new AdminController().listRollsPermissions(req, res);
+});
+
+router.get("/rolls-permissions/:id", function(req, res){
+    new AdminController().getRollsPermissions(req, res);
+});
+
+router.delete("/rolls-permissions/:id", function(req, res){
+    new AdminController().deleteRollsPermissions(req, res);
 });
 
 
