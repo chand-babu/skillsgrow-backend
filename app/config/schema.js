@@ -13,7 +13,10 @@ collections.UPDATED_COURSE = 'updatedCourse';
 collections.CHAPTER = 'chapter';
 collections.TOPIC = 'topic';
 collections.LEARNING = 'learning';
+
+/* Created by chand */
 collections.FORUM_DISCUSSION = 'forumDiscussion';
+collections.ROLLS_PERMISSIONS = 'rollsPermissions';
 /* Fronted collections */
 collections.REGISTER = 'register';
 collections.BANNERIMAGES = 'bannerImages';
@@ -35,7 +38,7 @@ var administrator = new Schema({
 	phone: String,
 	image: String,
 	password: String,
-	rollsPermission: String,
+	rollsPermission: [{ type: mongoose.Schema.Types.ObjectId, ref: 'rollsPermissions' }],
 	createdOn: { type: Date, default: Date.now },
 	status: Number  // 0-admin 1-subadmin default -1
 }, { versionKey: false })
@@ -81,20 +84,6 @@ var course = new Schema({
 	status: { type: Number, required: true, integer: true } //0-skillsgrow courses, 1-skillsgrow internship,
 }, { versionKey: false, usePushEach: true });
 course.plugin(integerValidator);
-
-var forumDiscussion = new Schema({
-	courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'course' },
-	userId : { type: mongoose.Schema.Types.ObjectId, ref: 'register' },
-	userName : String,
-	chatMessage: String,
-	replyMessage : [{
-		userId: { type: mongoose.Schema.Types.ObjectId, ref: 'register' },
-		userName : String,
-		replyMessage: String,
-		createdOn: { type: Date }
-	}],
-	createdOn: { type: Date }
-}, { versionKey: false, usePushEach: true });
 
 var updatedCourse = new Schema({
 	courseId: { type: String, required: true },
@@ -258,6 +247,28 @@ var payuResponseScheme = new Schema({
 	payuMoneyId: { type: String },
 }, { versionKey: false });
 
+//created by chand
+var forumDiscussion = new Schema({
+	courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'course' },
+	userId : { type: mongoose.Schema.Types.ObjectId, ref: 'register' },
+	userName : String,
+	chatMessage: String,
+	replyMessage : [{
+		userId: { type: mongoose.Schema.Types.ObjectId, ref: 'register' },
+		userName : String,
+		replyMessage: String,
+		createdOn: { type: Date }
+	}],
+	createdOn: { type: Date }
+}, { versionKey: false, usePushEach: true });
+
+var rollsPermissions = new Schema({
+	title : String,
+	permissions : [],
+	createdOn: { type: Date, default: Date.now },
+	status: Number
+}, { versionKey: false, usePushEach: true });
+
 /* 
 	# Created model for schema to access database
 */
@@ -277,6 +288,7 @@ schemaObj.contactEnterpriseTeam = mongoose.model('contactEnterpriseTeam', contac
 schemaObj.askQuestion = mongoose.model('askQuestion', askQuestion, collections.ASKQUESTION);
 schemaObj.publishSkillsgrowScheme = mongoose.model('publishSkillsgrowScheme', publishSkillsgrowScheme, collections.PUBLISHSKILLSGROWSCHEME);
 schemaObj.payuResponseScheme = mongoose.model('payuResponseScheme', payuResponseScheme, collections.PAYURESPONSESCHEME);
+schemaObj.rollsPermissions = mongoose.model('rollsPermissions', rollsPermissions, collections.ROLLS_PERMISSIONS);
 module.exports = schemaObj;
 
 // testkey - chandbabu123

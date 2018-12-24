@@ -29,9 +29,32 @@ class AdminModel {
 		});
 	}
 
+	updateAdministrator(data) {
+		return new Promise((resolve, reject) => {
+			mongo.admin.update({ _id: data.id }, { $set: data }, function (err, docs) {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					reject(result);
+				} else {
+					result = {
+						"result": true,
+						"data": "updated Successfully"
+					}
+					resolve(result);
+				}
+			});
+		});
+	}
+
 	adminLogin(data) {
 		return new Promise((resolve, reject) => {
-			mongo.admin.findOne({ 'emailId': data.emailId }, (err, docs) => {
+			mongo.admin.findOne({ 'emailId': data.emailId, 'status': { $ne: 2 }  })
+			.populate('rollsPermission')
+			.exec( (err, docs) => {
 
 				if (!err) {
 					var hashPwd = (docs != null) ? base.validPassword(data.password, docs) : false;
@@ -149,7 +172,58 @@ class AdminModel {
 
 	adminList() {
 		return new Promise((resolve, reject) => {
-			mongo.admin.find((err, docs) => {
+			mongo.admin.find({ status : { $ne : 0 }},{ password: 0 })
+			// .populate('rollsPermission')
+			.exec((err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					//console.log(result);
+					reject(result);
+				} else {
+					result = {
+						"result": true,
+						"data": docs
+					};
+					//console.log(result);
+					resolve(result);
+				}
+			});
+		});
+	}
+
+	adminGet(id) {
+		return new Promise((resolve, reject) => {
+			mongo.admin.find({ _id:id }, { password: 0 })
+			// .populate('rollsPermission')
+			.exec((err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					//console.log(result);
+					reject(result);
+				} else {
+					result = {
+						"result": true,
+						"data": docs
+					};
+					//console.log(result);
+					resolve(result);
+				}
+			});
+		});
+	}
+
+	adminDelete(id) {
+		return new Promise((resolve, reject) => {
+			mongo.admin.remove({ _id:id })
+			.exec((err, docs) => {
 				if (err) {
 					result = {
 						"result": false,
@@ -1210,6 +1284,148 @@ class AdminModel {
 			mongo.forumDiscussion.update({ courseId: courseId, _id: discussId },
 				{ $push : { replyMessage: data }},
 				(err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					//console.log(result);
+					reject(result);
+				} else {
+					result = {
+						"result": true,
+						"data": docs
+					};
+					//console.log(result);
+					resolve(result);
+				}
+			})
+		});
+	}
+
+	addRollsPermissions(data) {
+		return new Promise((resolve, reject) => {
+			mongo.rollsPermissions.create(data, (err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					//console.log(result);
+					reject(result);
+				} else {
+					result = {
+						"result": true,
+						"data": 'Successfully Added'
+					};
+					//console.log(result);
+					resolve(result);
+				}
+			})
+		});
+	}
+
+	updateRollsPermissions(data) {
+		return new Promise((resolve, reject) => {
+			mongo.rollsPermissions.update({ _id : data.id },{ $set: data },
+				(err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					//console.log(result);
+					reject(result);
+				} else {
+					result = {
+						"result": true,
+						"data": docs
+					};
+					//console.log(result);
+					resolve(result);
+				}
+			})
+		});
+	}
+
+	listRollsPermissions() {
+		return new Promise((resolve, reject) => {
+			mongo.rollsPermissions.find((err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					//console.log(result);
+					reject(result);
+				} else {
+					result = {
+						"result": true,
+						"data": docs
+					};
+					//console.log(result);
+					resolve(result);
+				}
+			})
+		});
+	}
+
+	deleteRollsPermissions(id) {
+		return new Promise((resolve, reject) => {
+			mongo.rollsPermissions.remove({ _id: id}, (err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					//console.log(result);
+					reject(result);
+				} else {
+					// deleteFromSubadmin(id);
+					result = {
+						"result": true,
+						"data": docs
+					};
+					//console.log(result);
+					resolve(result);
+				}
+			})
+		});
+	}
+
+	deleteFromSubadmin(id) {
+		return new Promise((resolve, reject) => {
+			mongo.admin.find( (err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					reject(result);
+				} else {
+					docs.filter((item) => {
+						item.rollsPermission.splice(item.rollsPermission.indexOf(id),1);
+					});
+					docs.save();
+					result = {
+						"result": true,
+						"data": docs
+					};
+					resolve(result);
+				}
+			});
+		});
+	}
+
+	getRollsPermissions(id) {
+		return new Promise((resolve, reject) => {
+			mongo.rollsPermissions.find({ _id: id }, (err, docs) => {
 				if (err) {
 					result = {
 						"result": false,
