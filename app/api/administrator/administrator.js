@@ -332,6 +332,22 @@ router.delete("/course-delete/:id", productionOrDevelopment, function(req, res){
     new AdminController().courseDelete(req, res);
 });
 
+router.get("/course/:id", productionOrDevelopment, function(req, res){
+    new AdminController().getCourseById(req, res);
+});
+
+router.get("/course/:id", productionOrDevelopment, function(req, res){
+    new AdminController().getCourseById(req, res);
+});
+
+router.get("/category-name", productionOrDevelopment, function(req, res){
+    new AdminController().getCategoryName(req, res);
+});
+
+router.get("/course", productionOrDevelopment, function(req, res){
+    new AdminController().getCourse(req, res);
+});
+
 //created by chand
 router.post("/rolls-permissions", function(req, res){
     new AdminController().addRollsPermissions(req, res);

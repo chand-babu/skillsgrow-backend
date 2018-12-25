@@ -1709,6 +1709,57 @@ class AdminController {
 		})
 	}
 
+	getCourseById(req, res) {
+		mongo.course.find({_id: req.params.id}, (err,data) => {
+			if (err) {
+				res.json({
+					"result": false,
+					"message": "something went wrong",
+				});
+			} else {
+				res.json({
+					"result": true,
+					"data": data
+				});
+			}
+		})
+	}
+
+	getCategoryName(req, res) {
+		mongo.category.find({}, { _id: 1, categoryName: 1, categoryImg: 1}).lean()
+		 .populate({path: 'course', select: 'courseName _id'})
+		.exec((err, data) => {
+			if (err) {
+				res.json({
+					"result": false,
+					"message": "something went wrong",
+				});
+			} else {
+				res.json({
+					"result": true,
+					"data": data
+				});
+			}
+		})
+	}
+
+	getCourse(req, res) {
+		mongo.course.find({}).limit(7)
+		.exec((err, data) => {
+			if (err) {
+				res.json({
+					"result": false,
+					"message": "something went wrong",
+				});
+			} else {
+				res.json({
+					"result": true,
+					"data": data
+				});
+			}
+		})
+	}
+
 	//created by chand
 	addRollsPermissions(req, res) {
 		var data = {
