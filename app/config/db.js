@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 global.tokenKey = "skillsgrow@123";
 
 dbchange = (value) => {
-	mongoose.connection.close();
+	// mongoose.connection.close();
 	var dbname = ''; 
 	// console.log(value);
 	if (!value) {
