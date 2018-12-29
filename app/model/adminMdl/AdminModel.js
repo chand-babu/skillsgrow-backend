@@ -173,7 +173,7 @@ class AdminModel {
 	adminList() {
 		return new Promise((resolve, reject) => {
 			mongo.admin.find({ status : { $ne : 0 }},{ password: 0 })
-			// .populate('rollsPermission')
+			.populate('rollsPermission')
 			.exec((err, docs) => {
 				if (err) {
 					result = {
@@ -198,7 +198,6 @@ class AdminModel {
 	adminGet(id) {
 		return new Promise((resolve, reject) => {
 			mongo.admin.find({ _id:id }, { password: 0 })
-			// .populate('rollsPermission')
 			.exec((err, docs) => {
 				if (err) {
 					result = {
@@ -1376,7 +1375,7 @@ class AdminModel {
 
 	deleteRollsPermissions(id) {
 		return new Promise((resolve, reject) => {
-			mongo.rollsPermissions.remove({ _id: id}, (err, docs) => {
+			mongo.rollsPermissions.remove({ _id: id }, (err, docs) => {
 				if (err) {
 					result = {
 						"result": false,
@@ -1386,40 +1385,24 @@ class AdminModel {
 					//console.log(result);
 					reject(result);
 				} else {
-					// deleteFromSubadmin(id);
-					result = {
-						"result": true,
-						"data": docs
-					};
-					//console.log(result);
-					resolve(result);
+					mongo.admin.update({}, { $pull : { rollsPermission : [id] }}, (err, doc) => {
+						if (err) {
+							result = {
+								"result": false,
+								"dev": err,
+								"message": "something went wrong"
+							};
+							reject(result);
+						} else {
+							result = {
+								"result": true,
+								"data": doc
+							};
+							resolve(result);
+						}
+					});
 				}
 			})
-		});
-	}
-
-	deleteFromSubadmin(id) {
-		return new Promise((resolve, reject) => {
-			mongo.admin.find( (err, docs) => {
-				if (err) {
-					result = {
-						"result": false,
-						"dev": err,
-						"message": "something went wrong"
-					};
-					reject(result);
-				} else {
-					docs.filter((item) => {
-						item.rollsPermission.splice(item.rollsPermission.indexOf(id),1);
-					});
-					docs.save();
-					result = {
-						"result": true,
-						"data": docs
-					};
-					resolve(result);
-				}
-			});
 		});
 	}
 

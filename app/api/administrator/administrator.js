@@ -33,15 +33,15 @@ router.post("/token", productionOrDevelopment, function(req , res){
     new AdminController().adminToken(req , res);
 });
 
-router.get("/add", function(req , res){
+router.get("/add", productionOrDevelopment, function(req , res){
     new AdminController().adminList(req, res);
 });
 
-router.get("/add/:id", function(req , res){
+router.get("/add/:id", productionOrDevelopment, function(req , res){
     new AdminController().adminGet(req, res);
 });
 
-router.delete("/add/:id", function(req , res){
+router.delete("/add/:id", productionOrDevelopment, function(req , res){
     new AdminController().adminDelete(req, res);
 });
 
@@ -349,23 +349,23 @@ router.get("/course", productionOrDevelopment, function(req, res){
 });
 
 //created by chand
-router.post("/rolls-permissions", function(req, res){
+router.post("/rolls-permissions", productionOrDevelopment,function(req, res){
     new AdminController().addRollsPermissions(req, res);
 });
 
-router.put("/rolls-permissions", function(req, res){
+router.put("/rolls-permissions", productionOrDevelopment, function(req, res){
     new AdminController().updateRollsPermissions(req, res);
 });
 
-router.get("/rolls-permissions", function(req, res){
+router.get("/rolls-permissions", productionOrDevelopment, function(req, res){
     new AdminController().listRollsPermissions(req, res);
 });
 
-router.get("/rolls-permissions/:id", function(req, res){
+router.get("/rolls-permissions/:id", productionOrDevelopment, function(req, res){
     new AdminController().getRollsPermissions(req, res);
 });
 
-router.delete("/rolls-permissions/:id", function(req, res){
+router.delete("/rolls-permissions/:id", productionOrDevelopment, function(req, res){
     new AdminController().deleteRollsPermissions(req, res);
 });
 
