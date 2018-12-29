@@ -1744,7 +1744,9 @@ class AdminController {
 	}
 
 	getCourse(req, res) {
-		mongo.course.find({}).limit(7)
+		mongo.course.find({}, {enrolledUser: 0, discussionForums: 0, faq: 0, description: 0})
+		.lean()
+		.limit(7)
 		.exec((err, data) => {
 			if (err) {
 				res.json({
