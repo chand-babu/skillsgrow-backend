@@ -1,4 +1,5 @@
 var administrator = require('../app/api/administrator/administrator');
+var company = require('../app/api/administrator/company');
 var Chat = require('../app/api/administrator/chat');
 var api = require('../app/api/docs/api');
 
@@ -11,6 +12,7 @@ class ApiRoute{
 	routes(app){
 		app.use('/docs', api);
 		app.use('/admin', administrator);
+		app.use('/company', company);
 	}
 
 	webSocket(io){
