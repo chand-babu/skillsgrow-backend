@@ -336,10 +336,6 @@ router.get("/course/:id", productionOrDevelopment, function(req, res){
     new AdminController().getCourseById(req, res);
 });
 
-router.get("/course/:id", productionOrDevelopment, function(req, res){
-    new AdminController().getCourseById(req, res);
-});
-
 router.get("/category-name", productionOrDevelopment, function(req, res){
     new AdminController().getCategoryName(req, res);
 });
