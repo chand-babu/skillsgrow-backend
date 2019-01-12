@@ -59,6 +59,28 @@ class AdminController {
 		});
 	}
 
+	uploadResume(req, res) {
+		base.uploadResume(req, res, function (err) {
+			if (!req.result) {
+				result = {
+					"result": req.result,
+					"message": req.imageError
+				}
+				return res.send(result);
+			}
+
+			if (err) {
+				res.send({ result: 'fail', error: { code: 1001, message: 'File is too big' } });
+			} else {
+				res.send({
+					"result": true,
+					"filename": req.file.filename,
+					"message": "File uploaded"
+				});
+			}
+		});
+	}
+
 	addAdministrator(req, res) {
 		var pwd = base.hashPassword(req.body.password);
 		var data = {
@@ -440,7 +462,7 @@ class AdminController {
 					res.send(response);
 				}
 			}, (reject) => {
-				res.send(reject)
+				res.send(reject);
 			});
 	}
 
@@ -1758,7 +1780,6 @@ class AdminController {
 	getCourse(req, res) {
 		mongo.course.find({}, {discussionForums: 0, faq: 0, description: 0})
 		.lean()
-		.limit(7)
 		.exec((err, data) => {
 			if (err) {
 				res.json({
@@ -1842,6 +1863,23 @@ class AdminController {
 	getRollsPermissions(req, res) {
 		let id = req.params.id;
 		this.admin.getRollsPermissions(id)
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject);
+			});
+	}
+
+	trandingCourse(req, res) {
+		let data = {
+			id: req.body.id,
+			viewTrending: req.body.viewTrending
+		}
+		this.admin.trandingCourse(data)
 			.then((response) => {
 				if (response.result) {
 					res.send(response);
