@@ -444,9 +444,21 @@ class AdminController {
 			});
 	}
 
-	getCourse(req, res) {
-		var courseId = req.params.courseid;
-		this.admin.getCourse(courseId)
+	getAllCourse(req, res) {
+		this.admin.getAllCourse()
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject)
+			});
+	}
+
+	getCategoryCourseList(req, res) {
+		this.admin.getCategoryCourseList(req)
 			.then((response) => {
 				if (response.result) {
 					res.send(response);
