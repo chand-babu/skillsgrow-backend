@@ -340,8 +340,16 @@ router.get("/category-name", productionOrDevelopment, function(req, res){
     new AdminController().getCategoryName(req, res);
 });
 
-router.get("/course", productionOrDevelopment, function(req, res){
+router.get("/trending-course", productionOrDevelopment, function(req, res){
     new AdminController().getCourse(req, res);
+});
+
+router.get("/all-courses", productionOrDevelopment, function(req, res){
+    new AdminController().getAllCourse(req, res);
+});
+
+router.get("/category-course-list/:categoryId", productionOrDevelopment, function(req, res){
+    new AdminController().getCategoryCourseList(req, res);
 });
 
 //created by chand

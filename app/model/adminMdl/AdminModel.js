@@ -540,9 +540,9 @@ class AdminModel {
 		});
 	}
 
-	getCourse(courseId) {
+	getAllCourse() {
 		return new Promise((resolve, reject) => {
-			mongo.course.findById(courseId, (err, docs) => {
+			mongo.course.find({active: true}, (err, data) => {
 				if (err) {
 					result = {
 						"result": false,
@@ -554,7 +554,33 @@ class AdminModel {
 				} else {
 					result = {
 						"result": true,
-						"data": docs
+						"data": data
+					};
+					//console.log(result);
+					resolve(result);
+				}
+			})
+		});
+	}
+
+	getCategoryCourseList(req) {
+		return new Promise((resolve, reject) => {
+			mongo.category.find({_id: req.params.categoryId}, {_id: 1, categoryName: 1})
+			.lean()
+			.populate({path: 'course'})
+			.exec((err, data) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					//console.log(result);
+					reject(result);
+				} else {
+					result = {
+						"result": true,
+						"data": data
 					};
 					//console.log(result);
 					resolve(result);
