@@ -12,6 +12,10 @@ router.post("/upload", productionOrDevelopment, function(req , res){
     new AdminController().uploadFile(req , res);
 });
 
+router.post("/upload-resume", productionOrDevelopment, function(req , res){
+    new AdminController().uploadResume(req , res);
+});
+
 router.post("/add", function(req , res){
     new AdminController().addAdministrator(req , res);
 });
@@ -371,6 +375,10 @@ router.get("/rolls-permissions/:id", productionOrDevelopment, function(req, res)
 
 router.delete("/rolls-permissions/:id", productionOrDevelopment, function(req, res){
     new AdminController().deleteRollsPermissions(req, res);
+});
+
+router.put("/view-trending-course", productionOrDevelopment, function(req, res){
+    new AdminController().trandingCourse(req, res);
 });
 
 

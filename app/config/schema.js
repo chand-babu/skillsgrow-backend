@@ -81,6 +81,7 @@ var course = new Schema({
 	enrolledUser: [],
 	courseReview: [],
 	active: Boolean,
+	viewTrending: Boolean,
 	status: { type: Number, required: true, integer: true } //0-skillsgrow courses, 1-skillsgrow internship,
 }, { versionKey: false, usePushEach: true });
 course.plugin(integerValidator);

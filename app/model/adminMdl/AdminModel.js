@@ -1455,6 +1455,47 @@ class AdminModel {
 		});
 	}
 
+	trandingCourse(data) {
+		return new Promise((resolve, reject) => {
+			mongo.course.find({ active:true,viewTrending:true }, (err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					reject(result);
+				} else {
+					let count = docs.length;
+					if(count >= 6 && data.viewTrending == true){
+						result = {
+							"result": true,
+							"status": true
+						};
+						resolve(result);
+					}else {
+						mongo.course.update({ _id: data.id }, { $set : data }, (err, doc) => {
+							if (err) {
+								result = {
+									"result": false,
+									"dev": err,
+									"message": "something went wrong"
+								};
+								reject(result);
+							} else {
+								result = {
+									"result": true,
+									"data": doc
+								};
+								resolve(result);
+							}
+						});
+					}
+					
+				}
+			})
+		});
+	}
 }
 
 module.exports = AdminModel;
