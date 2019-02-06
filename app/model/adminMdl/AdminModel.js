@@ -363,9 +363,56 @@ class AdminModel {
 		});
 	}
 
+	changeCategoryType(data) {
+		return new Promise((resolve, reject) => {
+			mongo.category.update({ _id: data.id }, { $set: data }, (err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					//console.log(result);
+					reject(result);
+				} else {
+					result = {
+						"result": true,
+						"data": docs
+					};
+					//console.log(result);
+					resolve(result);
+				}
+			})
+		});
+	}
+
 	listCategories() {
 		return new Promise((resolve, reject) => {
 			mongo.category.find()
+				.populate('course').exec((err, docs) => {
+					if (err) {
+						result = {
+							"result": false,
+							"dev": err,
+							"message": "something went wrong"
+						};
+						//console.log(result);
+						reject(result);
+					} else {
+						result = {
+							"result": true,
+							"data": docs
+						};
+						//console.log(result);
+						resolve(result);
+					}
+				})
+		});
+	}
+
+	listCategoryType(status) {
+		return new Promise((resolve, reject) => {
+			mongo.category.find({ categoryType: status})
 				.populate('course').exec((err, docs) => {
 					if (err) {
 						result = {

@@ -1,5 +1,7 @@
 var multer = require('multer');
 var bcrypt = require('bcrypt');
+var jwt = require('jsonwebtoken');
+var nodemailer = require('nodemailer');
 
 var base = {};
 var storage = multer.diskStorage({
@@ -74,4 +76,42 @@ base.hashPassword = (password) => {
 base.validPassword = (pwd,hashPwd) => {
     return bcrypt.compareSync(pwd, hashPwd.password);
 }
+
+base.genarateToken = (data, key, duration) => {
+  return jwt.sign(data, key, { expiresIn: duration});
+}
+
+base.verifyToken = (token,id) => {
+  return jwt.verify(token, id, (err, decoded) => {
+    if (err) {
+        return { 
+            result: false, 
+            message: 'Failed to authenticate token.' ,
+            dev: err
+        }
+    } else {
+        return {
+            result: true, 
+            message: 'Token Active.',
+            token: decoded
+        }
+    }
+  });
+}
+
+base.sendMail = (mailOptions) => {
+  var smtpTransport = nodemailer.createTransport({
+    host: 'smtp.zoho.in',
+    port: 465,
+    secure: 'true',
+    auth: {
+      user: 'admin@skillsgrow.com', // 'shrikumar01@gmail.com',//'!!! YOUR SENDGRID USERNAME !!!',
+      pass: '$killsgrow123'// 'enter$2020'//'!!! YOUR SENDGRID PASSWORD !!!'
+    }
+  });
+  smtpTransport.sendMail(mailOptions, function (err, info) {
+    if (err) console.log(err);
+  });
+}
+
 module.exports = base;
