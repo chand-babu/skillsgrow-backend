@@ -63,9 +63,18 @@ router.put("/update-category",tokenAuth, function(req , res){
     new AdminController().updateCategory(req , res);
 });
 
+router.put("/change-category-type",tokenAuth, function(req , res){
+    new AdminController().changeCategoryType(req , res);
+});
+
 router.get("/list-categories", productionOrDevelopment, function(req , res){
     console.log(req.originalUrl, req.headers['production-mode']);
     new AdminController().listCategories(req , res);
+});
+
+router.get("/list-categories/:value", productionOrDevelopment, function(req , res){
+    console.log(req.originalUrl, req.headers['production-mode']);
+    new AdminController().listCategoryType(req , res);
 });
 
 router.get("/list-categories-course/:id", productionOrDevelopment, function(req , res){

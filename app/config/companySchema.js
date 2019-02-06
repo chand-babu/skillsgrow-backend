@@ -17,6 +17,8 @@ var company = new Schema({
     companyUrl: String,
     companyDescription: String,
     companyLogo: String,
+    token: String,
+    active: Boolean,
 	createdOn: { type: Date, default: Date.now },
 	status: Number
 }, { versionKey: false });
@@ -33,9 +35,10 @@ var internship = new Schema({
     contactPersonNo: String,
     contactPersonEmail: String,
     jobDescription: String,
+    users : [{ type: String }],
     createdOn: { type: Date, default: Date.now },
 	status: Number
-}, { versionKey: false }); 
+}, { versionKey: false, usePushEach: true }); 
 
 var apply_internship = new Schema({
     companyId : { type: mongoose.Schema.Types.ObjectId, ref: 'company'},

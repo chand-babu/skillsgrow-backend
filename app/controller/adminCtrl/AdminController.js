@@ -16,6 +16,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var async = require('async');
 var crypto = require('crypto');
+const fs = require('fs');
 
 /* smtp config */
 
@@ -308,6 +309,7 @@ class AdminController {
 		var data = {
 			'categoryName': req.body.categoryName,
 			'categoryImg': req.body.categoryImg,
+			'categoryType': req.body.categoryType,
 			'createdBy': req.body.createdBy,
 			'status': req.body.status
 		};
@@ -328,6 +330,7 @@ class AdminController {
 		var data = {
 			'id': req.body.id,
 			'categoryName': req.body.categoryName,
+			'categoryType': req.body.categoryType,
 			'categoryImg': req.body.categoryImg,
 			'status': req.body.status
 		};
@@ -344,8 +347,40 @@ class AdminController {
 			});
 	}
 
+	changeCategoryType(req, res) {
+		var data = {
+			id : req.body.id,
+			categoryType : req.body.categoryType
+		};
+
+		this.admin.changeCategoryType(data)
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject)
+			});
+	}
+
 	listCategories(req, res) {
 		this.admin.listCategories()
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject)
+			});
+	}
+
+	listCategoryType(req, res) {
+		let status = req.params.value;
+		this.admin.listCategoryType(status)
 			.then((response) => {
 				if (response.result) {
 					res.send(response);
@@ -1778,7 +1813,7 @@ class AdminController {
 	}
 
 	getCourse(req, res) {
-		mongo.course.find({}, {discussionForums: 0, faq: 0, description: 0})
+		mongo.course.find({ viewTrending: true }, {discussionForums: 0, faq: 0, description: 0})
 		.lean()
 		.exec((err, data) => {
 			if (err) {

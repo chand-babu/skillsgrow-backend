@@ -56,6 +56,7 @@ var token = new Schema({
 var category = new Schema({
 	categoryName: { type: String, index: { unique: true }, required: true },
 	categoryImg: { type: String, required: true },
+	categoryType: { type: Number },
 	createdBy: { type: String },
 	createdOn: { type: Date, default: Date.now },
 	course: [{ type: mongoose.Schema.Types.ObjectId, ref: 'course' }],
