@@ -413,24 +413,25 @@ class AdminModel {
 	listCategoryType(status) {
 		return new Promise((resolve, reject) => {
 			mongo.category.find({ categoryType: status})
-				.populate('course').exec((err, docs) => {
-					if (err) {
-						result = {
-							"result": false,
-							"dev": err,
-							"message": "something went wrong"
-						};
-						//console.log(result);
-						reject(result);
-					} else {
-						result = {
-							"result": true,
-							"data": docs
-						};
-						//console.log(result);
-						resolve(result);
-					}
-				})
+			.populate({ path: 'course', select : '_id courseName'})
+			.exec((err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					//console.log(result);
+					reject(result);
+				} else {
+					result = {
+						"result": true,
+						"data": docs
+					};
+					//console.log(result);
+					resolve(result);
+				}	
+			});	
 		});
 	}
 
