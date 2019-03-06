@@ -10,6 +10,7 @@ dbchange = (value) => {
 	// console.log(value);
 	if (!value) {
 		dbname = 'skillsgrow';
+		// dbname = 'skillsgrow_server';
 	} else {
 		dbname = 'skillsgrow_dev';
 	}

@@ -237,7 +237,7 @@ router.post("/course-review", productionOrDevelopment, function(req, res, next){
 });
 
 router.put("/course-enrolled", productionOrDevelopment, function(req, res, next){
-    console.log(req.body, req.headers['production-mode']);
+    // console.log(req.body, req.headers['production-mode']);
     new AdminController().courseEnrolled(req, res, next);
 });
 
@@ -349,6 +349,10 @@ router.get("/course/:id", productionOrDevelopment, function(req, res){
     new AdminController().getCourseById(req, res);
 });
 
+router.get("/findCourseByName/:courseName", productionOrDevelopment, function (req, res) {
+    new AdminController().getCourseByName(req, res);
+});
+
 router.get("/category-name", productionOrDevelopment, function(req, res){
     new AdminController().getCategoryName(req, res);
 });
@@ -363,6 +367,10 @@ router.get("/all-courses", productionOrDevelopment, function(req, res){
 
 router.get("/category-course-list/:categoryId", productionOrDevelopment, function(req, res){
     new AdminController().getCategoryCourseList(req, res);
+});
+
+router.get("/category-course-list-by-name/:categoryName", productionOrDevelopment, function (req, res) {
+    new AdminController().getCategoryCourseListByName(req, res);
 });
 
 //created by chand
@@ -389,6 +397,27 @@ router.delete("/rolls-permissions/:id", productionOrDevelopment, function(req, r
 router.put("/view-trending-course", productionOrDevelopment, function(req, res){
     new AdminController().trandingCourse(req, res);
 });
+
+router.post("/testScriptForErolledUser", productionOrDevelopment, function (req, res) {
+    new AdminController().testScriptForErolledUser(req, res);
+})
+
+router.post("/testScriptForCourseReview", productionOrDevelopment, function (req, res) {
+    new AdminController().testScriptForCourseReview(req, res);
+})
+
+router.post("/testScriptForauthorDetails", productionOrDevelopment, function (req, res) {
+    new AdminController().testScriptForauthorDetails(req, res);
+})
+
+router.post("/testScriptForTimeline", productionOrDevelopment, function (req, res) {
+    new AdminController().testScriptForTimeline(req, res);
+})
+
+router.post("/testScript", productionOrDevelopment, function (req, res) {
+    new AdminController().testScript(req, res);
+})
+
 
 
 module.exports = router;
