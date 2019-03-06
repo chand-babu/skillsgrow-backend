@@ -26,7 +26,7 @@ var smtpTransport = nodemailer.createTransport({
 	secure: 'true',
 	auth: {
 		user: 'admin@skillsgrow.com', // 'shrikumar01@gmail.com',//'!!! YOUR SENDGRID USERNAME !!!',
-		pass: '$killsgrow123'// 'enter$2020'//'!!! YOUR SENDGRID PASSWORD !!!'
+		pass: '$killsgrow123' // 'enter$2020'//'!!! YOUR SENDGRID PASSWORD !!!'
 	}
 });
 
@@ -49,7 +49,13 @@ class AdminController {
 			}
 
 			if (err) {
-				res.send({ result: 'fail', error: { code: 1001, message: 'File is too big' } });
+				res.send({
+					result: 'fail',
+					error: {
+						code: 1001,
+						message: 'File is too big'
+					}
+				});
 			} else {
 				res.send({
 					"result": true,
@@ -71,7 +77,13 @@ class AdminController {
 			}
 
 			if (err) {
-				res.send({ result: 'fail', error: { code: 1001, message: 'File is too big' } });
+				res.send({
+					result: 'fail',
+					error: {
+						code: 1001,
+						message: 'File is too big'
+					}
+				});
 			} else {
 				res.send({
 					"result": true,
@@ -93,16 +105,16 @@ class AdminController {
 			"status": 1,
 		}
 		this.admin.addAdministrator(data, res)
-		.then((response) => {
-			if (response.result) {
-				res.send(response);
-			} else {
-				res.send(response);
-			}
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
 
-		}, (reject) => {
-			res.send(reject);
-		});
+			}, (reject) => {
+				res.send(reject);
+			});
 	}
 
 	updateAdministrator(req, res) {
@@ -115,16 +127,16 @@ class AdminController {
 			"status": req.body.status
 		}
 		this.admin.updateAdministrator(data, res)
-		.then((response) => {
-			if (response.result) {
-				res.send(response);
-			} else {
-				res.send(response);
-			}
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
 
-		}, (reject) => {
-			res.send(reject);
-		});
+			}, (reject) => {
+				res.send(reject);
+			});
 	}
 
 	adminLogin(req, res) {
@@ -185,46 +197,46 @@ class AdminController {
 
 	adminList(req, res) {
 		this.admin.adminList()
-		.then((response) => {
-			if (response.result) {
-				res.send(response);
-			} else {
-				res.send(response);
-			}
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
 
-		}, (reject) => {
-			res.send(reject);
-		});
+			}, (reject) => {
+				res.send(reject);
+			});
 	}
 
 	adminGet(req, res) {
 		let id = req.params.id;
 		this.admin.adminGet(id)
-		.then((response) => {
-			if (response.result) {
-				res.send(response);
-			} else {
-				res.send(response);
-			}
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
 
-		}, (reject) => {
-			res.send(reject);
-		});
+			}, (reject) => {
+				res.send(reject);
+			});
 	}
 
 	adminDelete(req, res) {
 		let id = req.params.id;
 		this.admin.adminDelete(id)
-		.then((response) => {
-			if (response.result) {
-				res.send(response);
-			} else {
-				res.send(response);
-			}
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
 
-		}, (reject) => {
-			res.send(reject);
-		});
+			}, (reject) => {
+				res.send(reject);
+			});
 	}
 
 	adminToken(req, res) {
@@ -248,7 +260,13 @@ class AdminController {
 						if (token != "") {
 							this.admin.adminToken(data)
 								.then((response) => {
-									var tokenResult = (response.result) ? { result: true, token: token } : { result: false, token: "Something Went wrong" };
+									var tokenResult = (response.result) ? {
+										result: true,
+										token: token
+									} : {
+										result: false,
+										token: "Something Went wrong"
+									};
 									res.send(tokenResult);
 								}, (reject) => {
 									res.send(reject);
@@ -283,12 +301,18 @@ class AdminController {
 	tokenAuth(req, res, next) {
 		var token = req.headers['x-access-token'];
 		//console.log(req)
-		if (!token) return res.status(401).send({ result: false, message: 'No token provided.' });
+		if (!token) return res.status(401).send({
+			result: false,
+			message: 'No token provided.'
+		});
 
 		jwt.verify(token, tokenKey, (err, decoded) => {
 			//console.log(err);
 			if (err) {
-				return res.status(500).send({ result: false, message: 'Failed to authenticate token.' });
+				return res.status(500).send({
+					result: false,
+					message: 'Failed to authenticate token.'
+				});
 			} else {
 				next();
 			}
@@ -349,8 +373,8 @@ class AdminController {
 
 	changeCategoryType(req, res) {
 		var data = {
-			id : req.body.id,
-			categoryType : req.body.categoryType
+			id: req.body.id,
+			categoryType: req.body.categoryType
 		};
 
 		this.admin.changeCategoryType(data)
@@ -394,7 +418,6 @@ class AdminController {
 
 	listCategoriesBycourse(req, res) {
 		let id = req.params.id;
-		console.log(id,'asdfs');
 		this.admin.listCategoriesBycourse(id)
 			.then((response) => {
 				if (response.result) {
@@ -436,7 +459,6 @@ class AdminController {
 	}
 
 	addCourse(req, res) {
-		console.log(req.body.timeline);
 		var data = {
 			'authorDetails': req.body.authorDetails,
 			'boostText': req.body.boostText,
@@ -526,6 +548,20 @@ class AdminController {
 				res.send(reject)
 			});
 	}
+
+	
+		getCategoryCourseListByName(req, res) {
+			this.admin.getCategoryCourseListByName(req)
+				.then((response) => {
+					if (response.result) {
+						res.send(response);
+					} else {
+						res.send(response);
+					}
+				}, (reject) => {
+					res.send(reject)
+				});
+		}
 
 	deleteCourse(req, res) {
 		var courseId = req.params.courseid;
@@ -827,7 +863,12 @@ class AdminController {
 
 	webRegister(req, res) {
 		var pwd = base.hashPassword(req.body.password);
-		var temptoken = jwt.sign({ userName: req.body.userName, emailId: req.body.emailId }, tokenKey, { expiresIn: '24h' });
+		var temptoken = jwt.sign({
+			userName: req.body.userName,
+			emailId: req.body.emailId
+		}, tokenKey, {
+			expiresIn: '24h'
+		});
 		var data = {
 			"profilePic": req.body.profilePic,
 			"userName": req.body.userName,
@@ -984,18 +1025,29 @@ class AdminController {
 					token = buf.toString('hex');
 				});
 			},
-			mongo.register.findOne({ emailId: req.body.emailId }).select().exec(function (err, user) {
+			mongo.register.findOne({
+				emailId: req.body.emailId
+			}).select().exec(function (err, user) {
 				if (err) throw err;
 				if (!user) {
-					res.json({ resullt: false, message: 'email is not found' });
+					res.json({
+						resullt: false,
+						message: 'email is not found'
+					});
 				} else if (!user.active) {
-					res.json({ result: false, message: 'Account yet not activated !' });
+					res.json({
+						result: false,
+						message: 'Account yet not activated !'
+					});
 				} else {
 					//user.resetPasswordToken = jwt.sign(user.toJSON(), tokenKey, { expiresIn: '24h' });
 					user.resetPasswordToken = token;
 					user.save(function (err) {
 						if (err) {
-							res.json({ result: false, message: err });
+							res.json({
+								result: false,
+								message: err
+							});
 						} else {
 							var mailOptions = {
 								to: user.emailId,
@@ -1013,7 +1065,10 @@ class AdminController {
 							smtpTransport.sendMail(mailOptions, function (err, info) {
 								if (err) console.log(err);
 							});
-							res.json({ result: true, message: 'please check your email' });
+							res.json({
+								result: true,
+								message: 'please check your email'
+							});
 						}
 					})
 				}
@@ -1029,13 +1084,21 @@ class AdminController {
 					token = buf.toString('hex');
 				});
 			},
-			mongo.register.findOne({ resetPasswordToken: req.params.token }).select()
+			mongo.register.findOne({
+				resetPasswordToken: req.params.token
+			}).select()
 			.exec(function (err, user) {
 				if (err) throw err;
 				if (user) {
-					res.json({ success: true, data: user });
+					res.json({
+						success: true,
+						data: user
+					});
 				} else {
-					res.json({ success: false, message: 'password link is expired' });
+					res.json({
+						success: false,
+						message: 'password link is expired'
+					});
 				}
 				// function to verify token
 				/* var token = req.params.token;
@@ -1051,17 +1114,25 @@ class AdminController {
 	}
 
 	savePassword(req, res) {
-		mongo.register.findOne({ emailId: req.body.emailId }).select().exec(function (err, user) {
+		mongo.register.findOne({
+			emailId: req.body.emailId
+		}).select().exec(function (err, user) {
 			if (err) throw err;
 			if (req.body.confirmPassword == null || req.body.confirmPassword == '') {
-				res.json({ result: false, message: 'password not provided' });
+				res.json({
+					result: false,
+					message: 'password not provided'
+				});
 			} else {
 				var pwd = base.hashPassword(req.body.confirmPassword);
 				user.password = pwd;
 				user.resetPasswordToken = false;
 				user.save(function (err) {
 					if (err) {
-						res.json({ success: false, message: err });
+						res.json({
+							success: false,
+							message: err
+						});
 					} else {
 						var mailOptions = {
 							to: user.emailId,
@@ -1072,7 +1143,10 @@ class AdminController {
 						smtpTransport.sendMail(mailOptions, function (err, info) {
 							if (err) console.log(err);
 						});
-						res.json({ result: true, message: 'password has been reset' });
+						res.json({
+							result: true,
+							message: 'password has been reset'
+						});
 					}
 				});
 			}
@@ -1080,10 +1154,15 @@ class AdminController {
 	}
 
 	checkTokenForEmail(req, res, next) {
-		mongo.register.findOne({ temporaryToken: req.params.token }).select().exec(function (err, user) {
+		mongo.register.findOne({
+			temporaryToken: req.params.token
+		}).select().exec(function (err, user) {
 			if (err) throw err;
 			if (!user) {
-				res.json({ result: false, message: 'link is expired' });
+				res.json({
+					result: false,
+					message: 'link is expired'
+				});
 			} else {
 				user.active = true;
 				user.temporaryToken = false;
@@ -1100,7 +1179,10 @@ class AdminController {
 						smtpTransport.sendMail(mailOptions, function (err, info) {
 							if (err) console.log(err);
 						});
-						res.json({ result: true, message: 'Account activated' });
+						res.json({
+							result: true,
+							message: 'Account activated'
+						});
 					}
 				})
 			}
@@ -1136,18 +1218,32 @@ class AdminController {
 	}
 
 	resendActivationLink(req, res, next) {
-		mongo.register.findOne({ emailId: req.body.email }, function (err, user) {
+		mongo.register.findOne({
+			emailId: req.body.email
+		}, function (err, user) {
 			var hashPwd = (user != null) ? base.validPassword(req.body.password, user) : false;
 			if (err) throw err;
 
 			if (!user) {
-				res.json({ result: false, message: 'could not authenticate' });
+				res.json({
+					result: false,
+					message: 'could not authenticate'
+				});
 			} else if (!hashPwd) {
-				res.json({ result: false, message: 'password is invalid' })
+				res.json({
+					result: false,
+					message: 'password is invalid'
+				})
 			} else if (user.active) {
-				res.json({ result: false, message: 'Account already activated' });
+				res.json({
+					result: false,
+					message: 'Account already activated'
+				});
 			} else {
-				res.json({ result: true, data: user });
+				res.json({
+					result: true,
+					data: user
+				});
 			}
 		});
 	}
@@ -1161,7 +1257,9 @@ class AdminController {
 					token = buf.toString('hex');
 				});
 			},
-			mongo.register.findOne({ emailId: req.body.email }).select().exec(function (err, user) {
+			mongo.register.findOne({
+				emailId: req.body.email
+			}).select().exec(function (err, user) {
 				if (err) throw err;
 				user.temporaryToken = token;
 				user.save(function (err) {
@@ -1180,54 +1278,152 @@ class AdminController {
 						smtpTransport.sendMail(mailOptions, function (err, info) {
 							if (err) console.log(err);
 						});
-						res.json({ result: true, message: 'Activation link send to ' + req.body.email + '!' });
+						res.json({
+							result: true,
+							message: 'Activation link send to ' + req.body.email + '!'
+						});
 					}
 				})
 			})
 		]);
 	}
 
-	courseReview(req, res, next) {
-		mongo.course.findByIdAndUpdate({ _id: req.body.courseId }, { $push: { courseReview: req.body } },
-			function (err, user) {
-				if (err) {
-					console.log(err);
-				} else {
-					if (user) {
-						user.save(function (err) {
-							if (err) {
-								console.log(err);
-							} else {
-								res.json({ result: true, message: 'sent successfully' });
-							}
-						});
-					}
-				}
-			});
-	}
+	// courseReview(req, res, next) {
+	// 	console.log('=====', req.body, '++++')
+	// 	mongo.course.findByIdAndUpdate({
+	// 			_id: req.body.courseId
+	// 		}, {
+	// 			$push: {
+	// 				courseReview: req.body
+	// 			}
+	// 		},
+	// 		function (err, user) {
+	// 			if (err) {
+	// 				console.log(err);
+	// 			} else {
+	// 				if (user) {
+	// 					user.save(function (err) {
+	// 						if (err) {
+	// 							console.log(err);
+	// 						} else {
+	// 							res.json({
+	// 								result: true,
+	// 								message: 'sent successfully'
+	// 							});
+	// 						}
+	// 					});
+	// 				}
+	// 			}
+	// 		});
+	// }
+
+	// courseEnrolled(req, res, next) {
+	// 	console.log('===========');
+	// 	console.log(req.body);
+	// 	mongo.course.findByIdAndUpdate({ _id: req.body.courseId }, { $push: { enrolledUser: req.body } },
+	// 		function (err, user) {
+	// 			if (err) {
+	// 				console.log(err);
+	// 			} else {
+	// 				console.log(user);
+	// 				if (user) {
+	// 					user.save(function (err) {
+	// 						if (err) {
+	// 							console.log(err);
+	// 						} else {
+	// 							res.json({ result: true, message: 'Enrolled successfully' });
+	// 						}
+	// 					});
+	// 				}
+	// 			}
+	// 		});
+	// }
 
 	courseEnrolled(req, res, next) {
-		mongo.course.findByIdAndUpdate({ _id: req.body.courseId }, { $push: { enrolledUser: req.body } },
-			function (err, user) {
-				if (err) {
-					console.log(err);
-				} else {
-					console.log(user);
-					if (user) {
-						user.save(function (err) {
+		this.admin.addEnrolledUser(req.body)
+			.then((response) => {
+				if (response.result) {
+					mongo.course.findByIdAndUpdate({
+							_id: req.body.courseId
+						}, {
+							$push: {
+								enrolledUser: response.enroll_id
+							}
+						},
+						function (err, user) {
 							if (err) {
 								console.log(err);
 							} else {
-								res.json({ result: true, message: 'Enrolled successfully' });
+								console.log(user);
+								if (user) {
+									user.save(function (err) {
+										if (err) {
+											console.log(err);
+										} else {
+											res.json({
+												result: true,
+												message: 'Enrolled successfully'
+											});
+										}
+									});
+								}
 							}
 						});
-					}
+				} else {
+					res.send(response);
 				}
+			}, (reject) => {
+				res.send(reject);
 			});
-	}
+	} //modified by nandita
+
+	courseReview(req, res, next) {
+		this.admin.addCourseReviewUser(req.body)
+			.then((response) => {
+				if (response.result) {
+					mongo.course.findByIdAndUpdate({
+							_id: req.body.courseId
+						}, {
+							$push: {
+								courseReview: response.courseReview_id
+							}
+						},
+						function (err, user) {
+							if (err) {
+								console.log(err);
+							} else {
+								if (user) {
+									user.save(function (err) {
+										if (err) {
+											console.log(err);
+										} else {
+											res.json({
+												result: true,
+												message: 'sent successfully'
+											});
+										}
+									});
+								}
+							}
+						});
+
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject);
+			});
+	} //modified by nandita
+
 
 	userCourseEnrolled(req, res, next) {
-		mongo.register.findByIdAndUpdate({ _id: req.body.userId }, { $push: { courseEnrolled: req.body } },
+		mongo.register.findByIdAndUpdate({
+				_id: req.body.userId
+			}, {
+				$push: {
+					courseEnrolled: req.body
+				}
+			},
 			function (err, user) {
 				if (err) {
 					console.log(err);
@@ -1237,7 +1433,10 @@ class AdminController {
 							if (err) {
 								console.log(err);
 							} else {
-								res.json({ result: true, message: 'User Enrolled the course successfully' });
+								res.json({
+									result: true,
+									message: 'User Enrolled the course successfully'
+								});
 							}
 						});
 					}
@@ -1246,19 +1445,25 @@ class AdminController {
 	}
 
 	userScore(req, res, next) {
-		mongo.register.findOne({ _id: req.body.userId },
+		mongo.register.findOne({
+				_id: req.body.userId
+			},
 			function (err, user) {
 				if (err) {
 					console.log(err);
 				} else {
-					console.log(user);
+					// console.log(user);
+					console.log("++++++++++", req.body.courses);
 					if (user) {
 						user.courseEnrolled = req.body.courses;
 						user.save(function (err) {
 							if (err) {
 								console.log(err);
 							} else {
-								res.json({ result: true, message: 'successfully submitted' });
+								res.json({
+									result: true,
+									message: 'successfully submitted'
+								});
 							}
 						});
 					}
@@ -1312,33 +1517,40 @@ class AdminController {
 		};
 		this.admin.updateTheCourse(data)
 			.then((response) => {
+				console.log("====res===", response)
 				if (response.result) {
 					res.send(response);
 				} else {
 					res.send(response);
 				}
 			}, (reject) => {
+				console.log("+++++++rej++++++", reject)
 				res.send(reject)
 			});
 	}
 
 	discussionForums(req, res, next) {
 		let chatData = req.body.discussionData;
-		mongo.course.findOne({ _id: req.body.courseId },
+		mongo.course.findOne({
+				_id: req.body.courseId
+			},
 			function (err, user) {
 				if (err) {
 					console.log(err);
 				} else {
 					if (user) {
-						(chatData.position == undefined) ? 
+						(chatData.position == undefined) ?
 						user.discussionForums.push(chatData):
-						user.discussionForums[chatData.position].replyMessage.push(chatData);
+							user.discussionForums[chatData.position].replyMessage.push(chatData);
 						user.markModified('discussionForums');
 						user.save(function (err) {
 							if (err) {
 								console.log(err);
 							} else {
-								res.json({ result: true, message: 'sent successfully' });
+								res.json({
+									result: true,
+									message: 'sent successfully'
+								});
 							}
 						});
 					}
@@ -1347,7 +1559,11 @@ class AdminController {
 	}
 
 	getDiscussionForums(req, res, next) {
-		mongo.course.findOne({ _id: req.params.courseId }, { discussionForums: 1 },
+		mongo.course.findOne({
+				_id: req.params.courseId
+			}, {
+				discussionForums: 1
+			},
 			function (err, docs) {
 				// console.log(docs);
 				if (err) {
@@ -1388,11 +1604,16 @@ class AdminController {
 	}
 
 	updateUserPassword(req, res) {
-		mongo.register.findOne({ _id: req.body._id }, function (error, user) {
+		mongo.register.findOne({
+			_id: req.body._id
+		}, function (error, user) {
 			if (user) {
 				var hashPwd = base.validPassword(req.body.oldPassword, user)
 				if (!hashPwd) {
-					res.json({ result: false, message: 'Old Password is Incorrect' });
+					res.json({
+						result: false,
+						message: 'Old Password is Incorrect'
+					});
 				} else {
 					var pwd = base.hashPassword(req.body.password);
 					user.password = pwd;
@@ -1401,7 +1622,10 @@ class AdminController {
 						if (err) {
 							console.log(err);
 						} else {
-							res.json({ result: true, message: 'Password Change Successfully' });
+							res.json({
+								result: true,
+								message: 'Password Change Successfully'
+							});
 						}
 					});
 				}
@@ -1410,17 +1634,28 @@ class AdminController {
 	}
 
 	checkEmailExistOrNot(req, res) {
-		mongo.register.findOne({ emailId: req.params.emailId }, function (error, user) {
+		mongo.register.findOne({
+			emailId: req.params.emailId
+		}, function (error, user) {
 			if (user) {
-				res.json({ result: true, message: 'Email Alredy there', _id: user._id });
+				res.json({
+					result: true,
+					message: 'Email Alredy there',
+					_id: user._id
+				});
 			} else {
-				res.json({ result: false, message: 'Email is not found' });
+				res.json({
+					result: false,
+					message: 'Email is not found'
+				});
 			}
 		})
 	}
 
 	courseFaq(req, res) {
-		mongo.course.findOne({ _id: req.body.courseId }, function (err, course) {
+		mongo.course.findOne({
+			_id: req.body.courseId
+		}, function (err, course) {
 			if (err) {
 				console.log(err);
 			} else {
@@ -1430,7 +1665,10 @@ class AdminController {
 						if (err) {
 							console.log(err);
 						} else {
-							res.json({ result: true, message: 'FAQ sent successfully' });
+							res.json({
+								result: true,
+								message: 'FAQ sent successfully'
+							});
 						}
 					});
 				}
@@ -1439,7 +1677,9 @@ class AdminController {
 	}
 
 	deleteFaq(req, res) {
-		mongo.course.findOne({ _id: req.body.courseId }, function (err, course) {
+		mongo.course.findOne({
+			_id: req.body.courseId
+		}, function (err, course) {
 			if (err) {
 				console.log(err);
 			} else {
@@ -1449,7 +1689,10 @@ class AdminController {
 						if (err) {
 							console.log(err);
 						} else {
-							res.json({ result: true, message: 'Delete Successfully' });
+							res.json({
+								result: true,
+								message: 'Delete Successfully'
+							});
 						}
 					});
 				}
@@ -1513,7 +1756,9 @@ class AdminController {
 	}
 
 	userCourseEnrolledList(req, res) {
-		mongo.course.findOne({ _id: req.params.userId }, function (err, data) {
+		mongo.course.findOne({
+			_id: req.params.userId
+		}, function (err, data) {
 			if (err) {
 				res.json({
 					"result": false,
@@ -1570,7 +1815,9 @@ class AdminController {
 	}
 
 	payuGetResponse(req, res) {
-		mongo.payuResponseScheme.find({ mihpayid: req.params.id }, function (err, user) {
+		mongo.payuResponseScheme.find({
+			mihpayid: req.params.id
+		}, function (err, user) {
 			if (err) {
 				res.json({
 					"result": false,
@@ -1587,7 +1834,9 @@ class AdminController {
 	}
 
 	certificatePayment(req, res) {
-		mongo.register.findByIdAndUpdate({ _id: req.body._id }).select().exec(function (err, user) {
+		mongo.register.findByIdAndUpdate({
+			_id: req.body._id
+		}).select().exec(function (err, user) {
 			if (!user) {
 				res.json({
 					"result": false,
@@ -1598,7 +1847,7 @@ class AdminController {
 					if (req.body.courseId === data._id) {
 						user.courseEnrolled[index].authorDetails[0].certificatePayment = true;
 						console.log(user.courseEnrolled[index].authorDetails[0].certificatePayment);
-						user.save(function(err) {
+						user.save(function (err) {
 							if (err) {
 								res.json({
 									"result": false,
@@ -1663,7 +1912,9 @@ class AdminController {
 	}
 
 	getSSP(req, res) {
-		mongo.register.find({ status: req.params.status }, function (err, user) {
+		mongo.register.find({
+			status: req.params.status
+		}, function (err, user) {
 			if (err) {
 				res.json({
 					"result": true,
@@ -1679,7 +1930,11 @@ class AdminController {
 	}
 
 	updateSSP(req, res) {
-		mongo.register.update({ _id: req.body._id }, { $set: req.body }, function (err, docs) {
+		mongo.register.update({
+			_id: req.body._id
+		}, {
+			$set: req.body
+		}, function (err, docs) {
 			if (err) {
 				res.json({
 					"result": true,
@@ -1695,7 +1950,9 @@ class AdminController {
 	}
 
 	deleteSSP(req, res) {
-		mongo.register.findByIdAndRemove({"_id": req.params.id }, (err, docs) => {
+		mongo.register.findByIdAndRemove({
+			"_id": req.params.id
+		}, (err, docs) => {
 			if (err) {
 				res.json({
 					"result": false,
@@ -1712,21 +1969,27 @@ class AdminController {
 	}
 
 	getRegister(req, res) {
-		mongo.register.find({}, { _id: 1, userName: 1, emailId: 1, 
-			phone: 1, profilePic:1, courseEnrolled:1 }).lean()
-		 .exec((err, user) => {
-			if (err) {
-				res.json({
-					"result": false,
-					"message": "something went wrong"
-				});
-			} else {
-				res.json({
-					"result": true,
-					"data": user
-				});
-			}
-		});
+		mongo.register.find({}, {
+				_id: 1,
+				userName: 1,
+				emailId: 1,
+				phone: 1,
+				profilePic: 1,
+				courseEnrolled: 1
+			}).lean()
+			.exec((err, user) => {
+				if (err) {
+					res.json({
+						"result": false,
+						"message": "something went wrong"
+					});
+				} else {
+					res.json({
+						"result": true,
+						"data": user
+					});
+				}
+			});
 	}
 
 	putRegister(req, res) {
@@ -1744,7 +2007,11 @@ class AdminController {
 	}
 
 	courseActiveInactive(req, res) {
-		mongo.course.update({_id: req.body._id}, {$set: req.body}, (err,docs) => {
+		mongo.course.update({
+			_id: req.body._id
+		}, {
+			$set: req.body
+		}, (err, docs) => {
 			if (err) {
 				res.json({
 					"result": false,
@@ -1761,81 +2028,270 @@ class AdminController {
 	}
 
 	courseDelete(req, res) {
-		mongo.course.findByIdAndRemove({_id: req.params.id}, (err,docs) => {
-			if (err) {
-				res.json({
-					"result": false,
-					"message": "something went wrong",
-					"dev": docs
-				});
-			} else {
-				res.json({
-					"result": true,
-					"mesage": "delete successfully",
-					"data": docs
-				});
-			}
-		})
-	}
+		mongo.course.findById({
+				_id: req.params.id
+			}, {
+				timeline: 1
+			})
+			.populate([{
+				path: 'timeline',
+				populate: [{
+					path: 'topics',
+					populate: {
+						path: 'questions'
+					}
+				}]
+			}])
+			.exec((err, docs) => {
+				if (err) {
+					res.json({
+						"result": false,
+						"message": "something went wrong",
+						"err": err
+					});
+				} else {
+					for (var timelineData of docs.timeline) {
+						mongo.timeline.find({
+							'_id': timelineData._id
+						}).remove((err, timelineDeleteDocs) => {
+							if (!err) {
+								console.log('==timelineDeleteDocs===', timelineDeleteDocs.result);
+							}
+						})
+						for (var topicsData of timelineData.topics) {
+							mongo.topics.find({
+								'_id': topicsData._id
+							}).remove((err, topicsDeleteDocs) => {
+								if (!err) {
+									console.log('==topicsDeleteDocs===', topicsDeleteDocs.result);
+								}
+							})
+							for (var questionsData of topicsData.questions) {
+								mongo.questions.find({
+									'_id': questionsData._id
+								}).remove((err, questionsDeleteDocs) => {
+									if (!err) {
+										console.log('==questionsDeleteDocs===', questionsDeleteDocs.result);
+									}
+								})
+							}
+						}
+					}
+
+					mongo.course.find({
+						'_id': req.params.id
+					}).remove((err, courseDeleteDocs) => {
+						if (!err) {
+							res.json({
+								"result": true,
+								"mesage": "delete successfully",
+								"data": courseDeleteDocs.resullt
+							});
+						}
+					})
+				}
+			})
+	} //modified by nandita
 
 	getCourseById(req, res) {
-		mongo.course.find({_id: req.params.id}, (err,data) => {
-			if (err) {
-				res.json({
-					"result": false,
-					"message": "something went wrong",
-				});
-			} else {
-				res.json({
-					"result": true,
-					"data": data
-				});
-			}
-		})
+		mongo.course.find({
+				_id: req.params.id
+			}, {
+				discussionForums: 0
+			}).populate([{
+				path: 'enrolledUser',
+				populate: {
+					path: 'userId',
+					select: {
+						'emailId': 1,
+						'userName': 1
+					}
+				}
+			}]) //Modified by nandita
+			.populate([{
+				path: 'courseReview',
+				populate: {
+					path: 'userId',
+					select: {
+						'emailId': 1,
+						'userName': 1
+					}
+				}
+			}]) //Modified by nandita
+			.populate([{
+				path: 'timeline',
+				// populate: {
+				// 	path: 'topics'
+				// }
+				populate: [{
+					path: 'topics',
+					populate: {
+						path: 'questions'
+					}
+				}]
+			}]) //Modified by nandita
+			.exec((err, data) => {
+				if (err) {
+					res.json({
+						"result": false,
+						"message": "something went wrong",
+					});
+				} else {
+					res.json({
+						"result": true,
+						"data": data
+					});
+				}
+			})
 	}
 
+	getCourseByName(req, res) {
+		console.log("++++++", req.params.courseName,'%555')
+		let courseName = req.params.courseName;
+		mongo.course.find({
+				// courseName: new RegExp(["^", req.params.courseName, "$"].join(""), "i")
+				courseName: {
+					$regex: new RegExp('^' + req.params.courseName.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '$', 'i')
+				}
+			}, {
+				discussionForums: 0
+			}).populate([{
+				path: 'enrolledUser',
+				populate: {
+					path: 'userId',
+					select: {
+						'emailId': 1,
+						'userName': 1
+					}
+				}
+			}]) //Modified by nandita
+			.populate([{
+				path: 'courseReview',
+				populate: {
+					path: 'userId',
+					select: {
+						'emailId': 1,
+						'userName': 1
+					}
+				}
+			}]) //Modified by nandita
+			.populate([{
+				path: 'timeline',
+				// populate: {
+				// 	path: 'topics'
+				// }
+				populate: [{
+					path: 'topics',
+					populate: {
+						path: 'questions'
+					}
+				}]
+			}]) //Modified by nandita
+			.exec((err, data) => {
+				if (err) {
+					res.json({
+						"result": false,
+						"message": "something went wrong",
+					});
+				} else {
+					console.log("____",data)
+					res.json({
+						"result": true,
+						"data": data
+					});
+				}
+			})
+	}
+
+
 	getCategoryName(req, res) {
-		mongo.category.find({}, { _id: 1, categoryName: 1, categoryImg: 1}).lean()
-		 .populate({path: 'course', select: 'courseName _id'})
-		.exec((err, data) => {
-			if (err) {
-				res.json({
-					"result": false,
-					"message": "something went wrong",
-				});
-			} else {
-				res.json({
-					"result": true,
-					"data": data
-				});
-			}
-		})
+		mongo.category.find({}, {
+				_id: 1,
+				categoryName: 1,
+				categoryImg: 1
+			}).lean()
+			.populate({
+				path: 'course',
+				select: 'courseName _id'
+			})
+			.exec((err, data) => {
+				if (err) {
+					res.json({
+						"result": false,
+						"message": "something went wrong",
+					});
+				} else {
+					res.json({
+						"result": true,
+						"data": data
+					});
+				}
+			})
 	}
 
 	getCourse(req, res) {
-		mongo.course.find({ viewTrending: true }, {discussionForums: 0, faq: 0, description: 0})
-		.lean()
-		.exec((err, data) => {
-			if (err) {
-				res.json({
-					"result": false,
-					"message": "something went wrong",
-				});
-			} else {
-				res.json({
-					"result": true,
-					"data": data
-				});
-			}
-		})
+		mongo.course.find({
+				viewTrending: true
+			}, {
+				discussionForums: 0,
+				faq: 0,
+				description: 0
+			})
+			.lean()
+			.populate([{
+				path: 'enrolledUser',
+				populate: {
+					path: 'userId',
+					select: {
+						'emailId': 1,
+						'userName': 1
+					}
+				}
+			}]) //Modified by nandita
+			.populate([{
+				path: 'courseReview',
+				populate: {
+					path: 'userId',
+					select: {
+						'emailId': 1,
+						'userName': 1
+					}
+				}
+			}]) //Modified by nandita
+			.populate([{
+				path: 'timeline',
+				// populate: {
+				// 	path: 'topics'
+				// }
+
+				populate: [{
+					path: 'topics',
+					populate: {
+						path: 'questions'
+					}
+				}]
+			}]) //Modified by nandita
+			.exec((err, data) => {
+				if (err) {
+					res.json({
+						"result": false,
+						"message": "something went wrong",
+					});
+				} else {
+					res.json({
+						"result": true,
+						"data": data
+					});
+				}
+			})
 	}
 
 	//created by chand
 	addRollsPermissions(req, res) {
 		var data = {
-			title : req.body.title,
-			permissions : req.body.permissions,
-			status : 0
+			title: req.body.title,
+			permissions: req.body.permissions,
+			status: 0
 		}
 		this.admin.addRollsPermissions(data)
 			.then((response) => {
@@ -1851,10 +2307,10 @@ class AdminController {
 
 	updateRollsPermissions(req, res) {
 		var data = {
-			id : req.body.id,
-			title : req.body.title,
-			permissions : req.body.permissions,
-			status : 0
+			id: req.body.id,
+			title: req.body.title,
+			permissions: req.body.permissions,
+			status: 0
 		}
 		this.admin.updateRollsPermissions(data)
 			.then((response) => {
@@ -1925,6 +2381,640 @@ class AdminController {
 				res.send(reject);
 			});
 	}
+
+	testScriptForErolledUser(req, res) {
+		async.parallel([
+			function (cb) {
+				mongo.course.find({
+					_id: req.body.courseId
+				}, {
+					enrolledUser: 1
+				}, (err, data) => {
+					if (err) {
+						cb({
+							"result": false,
+							"message": "something went wrong",
+						}, null)
+					} else {
+						cb(null, data);
+					}
+				})
+			}
+		], function (err, results) {
+			let enrolledUserId = [];
+			if (results[0] != "") {
+				async.forEachSeries(results[0], function (results, cb1) {
+					async.forEachSeries(results.enrolledUser, function (item2, cb2) {
+						mongo.register.findOne({
+							'emailId': item2.userEmailId
+						}, {
+							_id: 1
+						}, (err, docs) => {
+							if (!err && docs != null) {
+								mongo.enrolledUser.create({
+									userId: docs._id,
+									courseId: item2.courseId,
+									enrolledOn: item2.enrolledOn
+								}, (err, docs) => {
+									if (err) {
+										console.log(err, '+++1');
+										cb2();
+									} else {
+										enrolledUserId.push(docs._id);
+										cb2();
+									}
+								})
+							} else {
+
+								cb2()
+							}
+						});
+					}, function (err) {
+						cb1();
+					});
+				}, function (err) {
+					console.log(enrolledUserId);
+					if (enrolledUserId.length > 0) {
+						mongo.course.update({
+							_id: req.body.courseId
+						}, {
+							$set: {
+								enrolledUser: enrolledUserId
+							}
+						}, (err, docs) => {
+							if (err) {
+								result = {
+									"result": false,
+									"dev": err,
+									"message": "something went wrong"
+								};
+								console.log(result);
+							} else {
+								res.json({
+									"result": true,
+									"data": docs
+								});
+							}
+						})
+					} else {
+						res.json({
+							"result": true,
+							"message": "already updated"
+						});
+					}
+				});
+			} else {
+				res.json({
+					"result": true,
+					"message": 'no enrolled user data'
+				});
+			}
+		});
+	}
+
+	testScriptForCourseReview(req, res) {
+		async.parallel([
+			function (cb) {
+				mongo.course.find({
+					// _id: '5bed156f60abd21ff74d00a0'
+					_id: req.body.courseId
+				}, {
+					courseReview: 1
+				}, (err, data) => {
+					if (err) {
+						cb({
+							"result": false,
+							"message": "something went wrong",
+						}, null)
+					} else {
+						cb(null, data);
+					}
+				})
+			}
+		], function (err, results) {
+			let userCourseReviewId = [];
+			if (results[0] != "") {
+				async.forEachSeries(results[0], function (results, cb1) {
+					async.forEachSeries(results.courseReview, function (item2, cb2) {
+						mongo.register.findOne({
+							'emailId': item2.emailId
+						}, {
+							_id: 1
+						}, (err, docs) => {
+							if (!err && docs != null) {
+								mongo.courseReview.create({
+									userId: docs._id,
+									courseId: item2.courseId,
+									status: item2.status,
+									rating: item2.rating,
+									comment: item2.comment
+								}, (err, docs) => {
+									if (err) {
+										console.log(err);
+										cb2();
+									} else {
+										userCourseReviewId.push(docs._id);
+										cb2();
+									}
+								})
+							} else {
+								console.log(err);
+								cb2()
+							}
+						});
+					}, function (err) {
+						cb1();
+					});
+				}, function (err) {
+					console.log(userCourseReviewId, '====')
+					if (userCourseReviewId.length > 0) {
+						mongo.course.update({
+							_id: req.body.courseId
+							// _id: '5bed156f60abd21ff74d00a0'
+						}, {
+							$set: {
+								courseReview: userCourseReviewId
+							}
+						}, (err, docs) => {
+							if (err) {
+								result = {
+									"result": false,
+									"dev": err,
+									"message": "something went wrong"
+								};
+								console.log(result);
+							} else {
+								res.json({
+									"result": true,
+									"data": docs
+								});
+							}
+						})
+					} else {
+						res.json({
+							"result": true,
+							"message": "already updated"
+						});
+					}
+				});
+			} else {
+				res.json({
+					"result": true,
+					"message": 'no data'
+				});
+			}
+
+		});
+	}
+
+	testScriptForauthorDetails(req, res) {
+		async.parallel([
+			function (cb) {
+				mongo.course.find({
+					_id: req.body.courseId
+				}, {
+					authorDetails: 1
+				}, (err, data) => {
+					if (err) {
+						cb({
+							"result": false,
+							"message": "something went wrong",
+						}, null)
+					} else {
+						cb(null, data);
+					}
+				})
+			}
+		], function (err, results) {
+			let authorDetailsId = [];
+			if (results[0] != "") {
+				async.forEachSeries(results[0], function (results, cb1) {
+					async.forEachSeries(results.authorDetails, function (item2, cb2) {
+						item2.courseId = results._id;
+						console.log(item2);
+						mongo.authorDetails.create(item2, (err, docs) => {
+							if (err) {
+								// console.log(err);
+								res.json({
+									"result": true,
+									"err": err
+								});
+								cb2();
+							} else {
+								authorDetailsId.push(docs._id);
+								cb2();
+							}
+						})
+					}, function (err) {
+						cb1();
+					});
+				}, function (err) {
+					if (!err) {
+						if (authorDetailsId.length > 0) {
+							mongo.course.update({
+								_id: req.body.courseId
+							}, {
+								$set: {
+									authorDetails: authorDetailsId
+								}
+							}, (err, docs) => {
+								if (err) {
+									result = {
+										"result": false,
+										"dev": err,
+										"message": "something went wrong"
+									};
+									console.log(result);
+								} else {
+									res.json({
+										"result": true,
+										"data": docs
+									});
+								}
+							})
+						} else {
+							res.json({
+								"result": true,
+								"message": "already updated"
+							});
+						}
+					} else {
+						res.json({
+							"result": true,
+							"err": err
+						});
+					}
+				});
+			} else {
+				res.json({
+					"result": true,
+					"message": 'no data',
+					"err": err
+				});
+			}
+
+		});
+	}
+
+	testScriptForTimeline(req, res) {
+		async.parallel([
+			function (cb) {
+				mongo.course.find({
+					_id: req.body.courseId
+				}, {
+					timeline: 1
+				}, (err, data) => {
+					if (err) {
+						cb({
+							"result": false,
+							"message": "something went wrong",
+						}, null)
+					} else {
+						cb(null, data);
+					}
+				})
+			}
+		], function (err, results) {
+			let courseId;
+			let timeId;
+			let topId;
+			let timelineId = [];
+			let topicsId = [];
+			let questionsId = [];
+			if (!err) {
+				if (results[0] != "") {
+					async.forEachSeries(results[0], function (item1, cb1) {
+						courseId = item1._id;
+						async.forEachSeries(item1.timeline, function (item2, cb2) {
+							mongo.timeline.create(item2, (err2, docs2) => {
+								if (err2) {
+									console.log('==2==', err2);
+								} else {
+									timeId = docs2._id;
+									timelineId.push(docs2._id);
+									console.log(timeId, '*****timeId*******', timelineId, '===')
+									async.forEachSeries(item2.topics, function (item3, cb3) {
+										mongo.topics.create(item3, (err3, docs3) => {
+											if (err3) {
+												console.log('==3==', err3);
+											} else {
+												topId = docs3._id;
+												topicsId.push(docs3._id);
+												console.log(topId, '********topId*******', topicsId, '++')
+												async.forEachSeries(item3.questions, function (item4, cb4) {
+													mongo.questions.create(item4, (err4, docs4) => {
+														if (err4) {
+															console.log('==4==', err4);
+															cb4();
+														} else {
+															questionsId.push(docs4._id);
+															cb4();
+														}
+													})
+												}, function (err4) {
+													if (!err4) {
+														if (questionsId.length > 0) {
+															mongo.topics.update({
+																_id: topId
+															}, {
+																$set: {
+																	questions: questionsId
+																}
+															}, (topicerr, topicdocs) => {
+																if (topicerr) {
+																	console.log(topicerr);
+																	cb3()
+																} else {
+																	questionsId = [];
+																	cb3();
+																}
+															})
+														} else {
+															cb3()
+														}
+													} else {
+														console.log("===err4===", err4)
+														cb3()
+													}
+												});
+											}
+										})
+									}, function (err3) {
+										if (!err3) {
+											console.log("+++timeId++", timeId)
+											console.log("++topicsId+++", topicsId)
+											if (topicsId.length > 0) {
+												mongo.timeline.update({
+													_id: timeId
+												}, {
+													$set: {
+														topics: topicsId
+													}
+												}, (timelineerr, timelinedocs) => {
+													if (timelineerr) {
+														console.log(timelineerr);
+														cb2()
+													} else {
+														console.log("timeId data updated")
+														topicsId = [];
+														cb2();
+													}
+												})
+											} else {
+												cb2()
+											}
+										} else {
+											console.log("===err3===", err3)
+											cb2()
+										}
+									});
+								}
+							})
+						}, function (err2) {
+							if (!err2) {
+								console.log("+++courseId++", courseId)
+								console.log("++timelineId+++", timelineId)
+								mongo.course.update({
+									_id: courseId
+								}, {
+									$set: {
+										timeline: timelineId
+									}
+								}, (courseerr, coursedocs) => {
+									if (courseerr) {
+										console.log(courseerr);
+										cb1()
+									} else {
+										console.log("course data updated")
+										timelineId = [];
+										cb1();
+									}
+								})
+							} else {
+								console.log("====err2===", err2)
+								cb1()
+							}
+						});
+
+					}, function (err1) {
+						if (!err1) {
+							// console.log(timelineId, '=========tim====')
+							// console.log(topicsId, '====top=====')
+							// console.log(questionsId, '=====qu=====')
+
+							if (timelineId.length == 0 && topicsId.length == 0 && questionsId.length == 0) {
+								res.json({
+									"result": true,
+									"message": 'updated successfully'
+								});
+							} else {
+								res.json({
+									"result": false,
+									"message": 'Somthing went wrong',
+									"err1": err1,
+									// "err2": err2,
+									// "err3": err3,
+									// "err4": err4
+
+								});
+							}
+						} else {
+							res.json({
+								"result": false,
+								"message": 'Somthing went wrong',
+								"err1": err1
+							});
+						}
+					});
+				} else {
+					res.json({
+						"result": true,
+						"Message": "No data found"
+					});
+				}
+			} else {
+				res.json({
+					"result": true,
+					"err": err
+				});
+			}
+
+		});
+	}
+
+
+
+	testScript(req, res) {
+		console.log(req.body.courseId)
+		let timeId;
+		let topId;
+		let timelineId = [];
+		let topicsId = [];
+		let questionsId = [];
+		let data = {
+			authorDetails: [{
+				authorName: 'Nandita Naik',
+				authorEmail: 'nadita.prg@gmail.com',
+				authorPhone: '9611670845',
+				authorBiography: 'Sumanth works with the Instructional team to bring great content to more students and classrooms. He is a big fan of learning and teaching by using online technology and how it can bring employment opportunities to so many young students in India and all over the world.\n',
+				coursePrice: 'Free',
+				certificatePrice: 'Free'
+			}],
+			boostText: 'Learn and get Certificate Free',
+			categoryId: '5bb92ba29a8d2c489741bc96',
+			courseName: 'Node js',
+			description: '<p>Have you never programmed a computer before, and have been told that C is a good programming language to get started with.</p><p><strong>It is!</strong></p><p>Maybe you have some experience with other programming languages, but want to learn C.</p><p>The fact is, learning how to program in C is not only an excellent programming language to get started with, but it will also make you a better programmer in other computer languages!</p><h2><strong><u>What Will I Learn as a Beginner?</u></strong></h2><ul><li>Learn the Data types, Variables, and Operators.</li><li>Know how to write basic instructions and functions in C.</li><li>Decision making in C.</li><li>C standard library.</li><li>Loops in C.</li><li>C Preprocessor commands.</li><li>Learn Functions, Arrays, Strings, Structures in C.</li><li>most importantly pointers.</li></ul><h2><strong><u>Description:</u></strong></h2><p><strong>C</strong> is a high-level and general-purpose programming language that is ideal for developing firmware or portable applications. Originally intended for writing system software, C was developed at Bell Labs by Dennis Ritchie for the Unix Operating System in the early 1970s.</p><p>Ranked among the most widely used languages, C has a compiler for most computer systems and has influenced many popular languages – notably C++.</p><p>C belongs to the structured, procedural paradigms of languages. It is proven, flexible and powerful and may be used for a variety of different applications. Although high level, C and assembly language share many of the same attributes.</p><h2><strong><u>Requirements:</u></strong></h2><p>No programming experience.</p><h2><strong><u>Target audience?</u></strong></h2><p>Anyone who is looking to learn C language.</p>',
+			shortDescription: 'This course is meant to teach how to write programs to beginners of programming. It teaches how to get started with programming using C Language.',
+			imageLarge: '',
+			imageSmall: '',
+			video: '',
+			timeline: [{
+				title: 'Introduction',
+				topics: [{
+					description: "<p>sxsxsxsxsxsxsxsxsx</p>",
+					order: 0,
+					subTopics: "zxzxz",
+					timing: 33
+				}],
+				order: 0
+			}],
+			createdBy: '5c1b80b23bd70713241f5b0a',
+			status: 0
+		}
+		async.forEachSeries(data.timeline, function (item2, cb2) {
+			mongo.timeline.create({
+				title: item2.title,
+				order: item2.order
+			}, (err2, docs2) => {
+				if (err2) {
+					console.log('==2==', err2);
+				} else {
+					timeId = docs2._id;
+					timelineId.push(docs2._id);
+					console.log(timeId, '*****timeId*******', timelineId, '===')
+					async.forEachSeries(item2.topics, function (item3, cb3) {
+						mongo.topics.create({
+							description: item3.description,
+							order: item3.order,
+							subTopics: item3.subTopics,
+							timing: item3.timing
+						}, (err3, docs3) => {
+							if (err3) {
+								console.log('==3==', err3);
+							} else {
+								topId = docs3._id;
+								topicsId.push(docs3._id);
+								console.log(topId, '********topId*******', topicsId, '++')
+								async.forEachSeries(item3.questions, function (item4, cb4) {
+									mongo.questions.create(item4, (err4, docs4) => {
+										if (err4) {
+											console.log('==4==', err4);
+											cb4();
+										} else {
+											questionsId.push(docs4._id);
+											cb4();
+										}
+									})
+								}, function (err4) {
+									if (!err4) {
+										if (questionsId.length > 0) {
+											mongo.topics.update({
+												_id: topId
+											}, {
+												$set: {
+													questions: questionsId
+												}
+											}, (topicerr, topicdocs) => {
+												if (topicerr) {
+													console.log(topicerr);
+													cb3()
+												} else {
+													questionsId = [];
+													cb3();
+												}
+											})
+										} else {
+											cb3()
+										}
+									} else {
+										console.log("===err4===", err4)
+										cb3()
+									}
+								});
+							}
+						})
+					}, function (err3) {
+						if (!err3) {
+							console.log("+++timeId++", timeId)
+							console.log("++topicsId+++", topicsId)
+							if (topicsId.length > 0) {
+								mongo.timeline.update({
+									_id: timeId
+								}, {
+									$set: {
+										topics: topicsId
+									}
+								}, (timelineerr, timelinedocs) => {
+									if (timelineerr) {
+										console.log(timelineerr);
+										cb2()
+									} else {
+										console.log("timeId data updated")
+										topicsId = [];
+										cb2();
+									}
+								})
+							} else {
+								cb2()
+							}
+						} else {
+							console.log("===err3===", err3)
+							cb2()
+						}
+					});
+				}
+			})
+		}, function (err2) {
+			if (!err2) {
+				data.timeline = timelineId;
+				console.log("+++course++", data)
+
+				mongo.course.create(data, (err, docs) => {
+					if (err) {
+						result = {
+							"result": false,
+							"dev": err,
+							"message": "something went wrong"
+						};
+						console.log(result);
+						// reject(result);
+					} else {
+						mongo.category.find({
+							'_id': data.categoryId
+						}, (err, cat) => {
+							//console.log(data);
+							cat[0].course.push(docs._id);
+
+							cat[0].save((err) => {
+								if (err) {
+									console.log(err);
+								}
+							});
+						});
+						result = {
+							"result": true,
+							"data": docs
+						};
+						console.log(result);
+						// resolve(result);
+					}
+				})
+			} else {
+				console.log("====err2===", err2)
+			}
+		});
+	}
+
 }
 
 module.exports = AdminController;
