@@ -281,6 +281,10 @@ router.get("/check-email/:emailId", productionOrDevelopment, function(req, res, 
     new AdminController().checkEmailExistOrNot(req, res);
 });
 
+router.get("/check-course-name/:courseName", productionOrDevelopment, function (req, res, next) {
+    new AdminController().checkCourseNameExistOrNot(req, res);
+});
+
 router.put("/course-faq", productionOrDevelopment, function(req, res, next){
     new AdminController().courseFaq(req, res);
 });

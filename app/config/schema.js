@@ -96,6 +96,7 @@ var token = new Schema({
 var category = new Schema({
 	categoryName: {
 		type: String,
+		trim: true,
 		index: {
 			unique: true
 		},
@@ -141,7 +142,11 @@ var course = new Schema({
 	},
 	courseName: {
 		type: String,
-		required: true
+		required: true,
+		trim: true,
+		index: {
+			unique: true
+		}
 	},
 	description: String,
 	shortDescription: String,
@@ -188,7 +193,10 @@ var updatedCourse = new Schema({
 		type: String,
 		required: true
 	},
-	courseName: String,
+	courseName:{
+		type: String,
+		trim: true
+	},
 	description: String,
 	shortDescription: String,
 	imageLarge: String,
@@ -216,7 +224,8 @@ var chapter = new Schema({
 	},
 	chapterName: {
 		type: String,
-		required: true
+		required: true,
+		trim: true
 	},
 	order: {
 		type: Number
@@ -256,7 +265,8 @@ var topic = new Schema({
 	},
 	topicName: {
 		type: String,
-		required: true
+		required: true,
+		trim: true
 	},
 	order: {
 		type: Number
@@ -336,7 +346,8 @@ var register = new Schema({
 	profilePic: String,
 	userName: {
 		type: String,
-		required: true
+		required: true,
+		trim: true
 	},
 	emailId: {
 		type: String,
@@ -353,7 +364,10 @@ var register = new Schema({
 	password: String,
 	address: String,
 	gender: String,
-	collegeName: String,
+	collegeName: {
+		type: String,
+		trim: true
+	},
 	collegeId: String,
 	courseEnrolled: [],
 	createdOn: {
@@ -436,7 +450,8 @@ var contactEnterpriseTeam = new Schema({
 		type: String
 	},
 	companyName: {
-		type: String
+		type: String,
+		trim: true
 	},
 	phoneNumbercode: {
 		type: String
