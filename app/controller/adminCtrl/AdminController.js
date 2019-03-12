@@ -549,19 +549,19 @@ class AdminController {
 			});
 	}
 
-	
-		getCategoryCourseListByName(req, res) {
-			this.admin.getCategoryCourseListByName(req)
-				.then((response) => {
-					if (response.result) {
-						res.send(response);
-					} else {
-						res.send(response);
-					}
-				}, (reject) => {
-					res.send(reject)
-				});
-		}
+
+	getCategoryCourseListByName(req, res) {
+		this.admin.getCategoryCourseListByName(req)
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject)
+			});
+	}
 
 	deleteCourse(req, res) {
 		var courseId = req.params.courseid;
@@ -1652,6 +1652,29 @@ class AdminController {
 		})
 	}
 
+	checkCourseNameExistOrNot(req, res) {
+		mongo.course.findOne({
+			courseName: {
+				$regex: new RegExp('^' + req.params.courseName.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '$', 'i')
+			}
+		}, {
+			_id: 1
+		}, function (error, user) {
+			if (user) {
+				res.json({
+					result: true,
+					message: 'course name already exist',
+					_id: user._id
+				});
+			} else {
+				res.json({
+					result: false,
+					message: 'course name not found'
+				});
+			}
+		})
+	}
+
 	courseFaq(req, res) {
 		mongo.course.findOne({
 			_id: req.body.courseId
@@ -1803,13 +1826,17 @@ class AdminController {
 	}
 
 	payuResponse(req, res) {
-		console.log(req.body);
+		// console.log(req.body);
+		// req.body.status = "success";
+
+		// console.log('=====', req.body.status);
 		mongo.payuResponseScheme.create(req.body, function (err, docs) {
 			if (err) {
 				console.log(err);
 			} else {
-				console.log(docs);
-				res.redirect('http://localhost:4200/response/' + req.body.mihpayid + '');
+				// console.log(docs);
+				// res.redirect('http://localhost:4200/response/' + req.body.mihpayid + '');
+				res.redirect('https://www.skillsgrow.com/response/' + req.body.mihpayid + '');
 			}
 		});
 	}
@@ -1824,7 +1851,7 @@ class AdminController {
 					"message": "something went wrong"
 				});
 			} else {
-				console.log(user);
+				// console.log(user);
 				res.json({
 					"result": true,
 					"data": user
@@ -1846,7 +1873,6 @@ class AdminController {
 				user.courseEnrolled.filter((data, index) => {
 					if (req.body.courseId === data._id) {
 						user.courseEnrolled[index].authorDetails[0].certificatePayment = true;
-						console.log(user.courseEnrolled[index].authorDetails[0].certificatePayment);
 						user.save(function (err) {
 							if (err) {
 								res.json({
@@ -2031,7 +2057,8 @@ class AdminController {
 		mongo.course.findById({
 				_id: req.params.id
 			}, {
-				timeline: 1
+				timeline: 1,
+				categoryId:1
 			})
 			.populate([{
 				path: 'timeline',
@@ -2078,10 +2105,28 @@ class AdminController {
 						}
 					}
 
+
 					mongo.course.find({
 						'_id': req.params.id
 					}).remove((err, courseDeleteDocs) => {
 						if (!err) {
+							mongo.category.find({
+								'_id': docs.categoryId
+							}, (catErr, catDocs) => {
+								if (!catErr) {
+									let courseIndex = catDocs[0].course.indexOf(docs._id);
+									if (courseIndex > -1) {
+										catDocs[0].course.splice(courseIndex, 1);
+									}
+									catDocs[0].save((catSaveErr) => {
+										if (catSaveErr) {
+											console.log("++++catSaveErr+++", catSaveErr);
+										}
+									});
+								} else {
+									console.log("++++catErr+++", catErr);
+								}
+							});
 							res.json({
 								"result": true,
 								"mesage": "delete successfully",
@@ -2146,8 +2191,6 @@ class AdminController {
 	}
 
 	getCourseByName(req, res) {
-		console.log("++++++", req.params.courseName,'%555')
-		let courseName = req.params.courseName;
 		mongo.course.find({
 				// courseName: new RegExp(["^", req.params.courseName, "$"].join(""), "i")
 				courseName: {
@@ -2194,7 +2237,6 @@ class AdminController {
 						"message": "something went wrong",
 					});
 				} else {
-					console.log("____",data)
 					res.json({
 						"result": true,
 						"data": data
