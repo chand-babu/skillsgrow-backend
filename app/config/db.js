@@ -16,6 +16,7 @@ dbchange = (value) => {
 	}
 	var dbset = {
 		MONGO_CONNECT_URL:'mongodb://localhost:27017/'+dbname,
+		// MONGO_CONNECT_URL: 'mongodb://srikumar:@localhost:27017/' + dbname,
 		MONGO_CLIENT : { 
 			useMongoClient: true 
 		},

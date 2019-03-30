@@ -776,7 +776,6 @@ class AdminModel {
 			}, function (err2) {
 				if (!err2) {
 					data.timeline = timelineId;
-					console.log("############", data);
 					mongo.course.create(data, (courseErr, courseDocs) => {
 						if (courseErr) {
 							result = {
