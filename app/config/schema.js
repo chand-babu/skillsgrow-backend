@@ -150,6 +150,7 @@ var course = new Schema({
 	},
 	description: String,
 	shortDescription: String,
+	courseKeywords: String,
 	imageLarge: String,
 	imageSmall: String,
 	video: String,

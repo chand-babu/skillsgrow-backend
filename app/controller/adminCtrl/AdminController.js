@@ -466,6 +466,7 @@ class AdminController {
 			'courseName': req.body.courseName,
 			'description': req.body.description,
 			'shortDescription': req.body.shortDescription,
+			'courseKeywords': req.body.courseKeywords,
 			'imageLarge': req.body.imageLarge,
 			'imageSmall': req.body.imageSmall,
 			'video': req.body.video,
@@ -1507,6 +1508,7 @@ class AdminController {
 			'courseName': req.body.courseName,
 			'description': req.body.description,
 			'shortDescription': req.body.shortDescription,
+			'courseKeywords': req.body.courseKeywords,
 			'imageLarge': req.body.imageLarge,
 			'imageSmall': req.body.imageSmall,
 			'video': req.body.video,
@@ -1836,10 +1838,12 @@ class AdminController {
 			} else {
 				// console.log(docs);
 				// res.redirect('http://localhost:4200/response/' + req.body.mihpayid + '');
-				res.redirect('https://www.skillsgrow.com/response/' + req.body.mihpayid + '');
+				res.redirect('http://www.skillsgrow.com/response/' + req.body.mihpayid + '');
 			}
 		});
 	}
+
+
 
 	payuGetResponse(req, res) {
 		mongo.payuResponseScheme.find({
@@ -2175,6 +2179,27 @@ class AdminController {
 					}
 				}]
 			}]) //Modified by nandita
+			.exec((err, data) => {
+				if (err) {
+					res.json({
+						"result": false,
+						"message": "something went wrong",
+					});
+				} else {
+					res.json({
+						"result": true,
+						"data": data
+					});
+				}
+			})
+	}
+
+	getUserDetailsById(req, res) {
+		mongo.register.find({
+				_id: req.params.id
+			}, {
+				password: 0
+			})
 			.exec((err, data) => {
 				if (err) {
 					res.json({
