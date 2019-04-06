@@ -1035,7 +1035,7 @@ class AdminModel {
 							}
 						}
 					}]
-				}]) 
+				}])
 				.populate([{
 					path: 'course',
 					populate: [{
@@ -1060,7 +1060,7 @@ class AdminModel {
 							}
 						}]
 					}]
-				}]) 
+				}])
 				.exec((err, data) => {
 					if (err) {
 						result = {
@@ -2078,7 +2078,7 @@ class AdminModel {
 							});
 						}
 					})
-				}else{
+				} else {
 					cb2();
 				}
 			}, function (err2) {
