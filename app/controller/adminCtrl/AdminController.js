@@ -8,7 +8,7 @@ var mongo = require("../../config/schema");
 var url = 'https://skillsgrow.com/'; /* 'https://skillsgrow.com/' */
 var express = require("express");
 //var sharp = require('sharp');
-
+var emailExistence = require('email-existence');
 /* plugin for forgot password */
 var session = require('express-session')
 var nodemailer = require('nodemailer');
@@ -17,9 +17,11 @@ var LocalStrategy = require('passport-local').Strategy;
 var async = require('async');
 var crypto = require('crypto');
 const fs = require('fs');
+let self;
+let model = new AdminModule();
+
 
 /* smtp config */
-
 var smtpTransport = nodemailer.createTransport({
 	host: 'smtp.zoho.in',
 	port: 465,
@@ -30,12 +32,15 @@ var smtpTransport = nodemailer.createTransport({
 	}
 });
 
+let quickemailverification = require('quickemailverification').client('1b612ed679085008364e754a06e817ea11e7e2c951f2fe6cdd8e6861a830').quickemailverification();
+
 var controller = {};
 var result = {};
 
 class AdminController {
 	constructor() {
 		this.admin = new AdminModule();
+		self = this;
 	}
 
 	uploadFile(req, res) {
@@ -881,28 +886,51 @@ class AdminController {
 			"temporaryToken": temptoken,
 			"referId": req.body.referId
 		};
-		this.admin.frontendRegister(data)
-			.then((response) => {
-				if (response.result) {
-					var mailOptions = {
-						to: req.body.emailId,
-						from: 'admin@skillsgrow.com',
-						subject: 'Account Activation Link',
-						text: 'Click on this to link to activate your account .\n\n' +
-							url + 'activate/' + temptoken,
-						html: 'Click on this to link to activate your account . </br>' +
-							'<a href="' + url + 'activate/' + temptoken + '">' + url + 'activate/</a>'
-					};
-					smtpTransport.sendMail(mailOptions, function (err, info) {
-						if (err) console.log(err);
+		quickemailverification.verify(req.body.emailId, function (err, response) {
+			console.log("Email id:", req.body.emailId, 'res:', response.body.result);
+			if (response.body.result == 'valid') {
+				model.frontendRegister(data)
+					.then((response) => {
+						if (response.result) {
+							var mailOptions = {
+								to: req.body.emailId,
+								from: 'admin@skillsgrow.com',
+								subject: 'Account Activation Link',
+								text: 'Click on this to link to activate your account .\n\n' +
+									url + 'activate/' + temptoken,
+								html: 'Click on this to link to activate your account . </br>' +
+									'<a href="' + url + 'activate/' + temptoken + '">' + url + 'activate/</a>'
+							};
+							smtpTransport.sendMail(mailOptions, function (err, info) {
+								if (err) {
+									console.log(err);
+								}
+							});
+							res.send(response);
+						} else {
+							res.send(response);
+						}
+					}, (reject) => {
+						res.send(reject)
 					});
-					res.send(response);
-				} else {
-					res.send(response);
-				}
-			}, (reject) => {
-				res.send(reject)
-			});
+			} else {
+				res.json({
+					result: false,
+					message: 'Please given a valid Mail Id'
+				});
+			}
+		});
+	}
+
+	validEmailCheck(emailId) {
+		quickemailverification.verify(emailId, function (err, response) {
+			if (response.body.result == 'valid') {} else {
+				res.json({
+					result: true,
+					message: 'Please given a valid Mail Id'
+				});
+			}
+		});
 	}
 
 	storeBannerImages(req, res) {
@@ -1033,45 +1061,71 @@ class AdminController {
 				if (!user) {
 					res.json({
 						resullt: false,
-						message: 'email is not found'
+						message: 'email is not found',
+						reason: 'not found',
 					});
 				} else if (!user.active) {
 					res.json({
 						result: false,
-						message: 'Account yet not activated !'
+						message: 'Account yet not activated !',
+						reason: 'activate err',
 					});
 				} else {
-					//user.resetPasswordToken = jwt.sign(user.toJSON(), tokenKey, { expiresIn: '24h' });
-					user.resetPasswordToken = token;
-					user.save(function (err) {
-						if (err) {
-							res.json({
-								result: false,
-								message: err
+					quickemailverification.verify(req.body.emailId, function (err, response) {
+						console.log("Forget Email id:", req.body.emailId, 'res:', response.body.result)
+						if (response.body.result == 'valid') {
+							user.resetPasswordToken = token;
+							user.save(function (err) {
+								if (err) {
+									res.json({
+										result: false,
+										message: err,
+										reason: 'Token save issue',
+									});
+								} else {
+									var mailOptions = {
+										to: user.emailId,
+										from: 'admin@skillsgrow.com',
+										subject: 'Skillsgrow.com Password Reset',
+										text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+											'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+											url + '/resetpassword/' + user.resetPasswordToken + '\n\n' +
+											'If you did not request this, please ignore this email and your password will remain unchanged.\n',
+										html: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.</br>' +
+											'Please click on the following link, or paste this into your browser to complete the process.</br>' +
+											'<a href="' + url + 'resetpassword/' + user.resetPasswordToken + '">' + url + 'resetpassword/</a> ' +
+											'If you did not request this, please ignore this email and your password will remain unchanged',
+									};
+									smtpTransport.sendMail(mailOptions, function (err, info) {
+										if (err) console.log(err);
+									});
+									res.json({
+										result: true,
+										message: 'please check your email'
+									});
+								}
 							});
 						} else {
-							var mailOptions = {
-								to: user.emailId,
-								from: 'admin@skillsgrow.com',
-								subject: 'Skillsgrow.com Password Reset',
-								text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
-									'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-									url + '/resetpassword/' + user.resetPasswordToken + '\n\n' +
-									'If you did not request this, please ignore this email and your password will remain unchanged.\n',
-								html: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.</br>' +
-									'Please click on the following link, or paste this into your browser to complete the process.</br>' +
-									'<a href="' + url + 'resetpassword/' + user.resetPasswordToken + '">' + url + 'resetpassword/</a> ' +
-									'If you did not request this, please ignore this email and your password will remain unchanged',
-							};
-							smtpTransport.sendMail(mailOptions, function (err, info) {
-								if (err) console.log(err);
-							});
-							res.json({
-								result: true,
-								message: 'please check your email'
-							});
+							mongo.register.find({
+								emailId: req.body.emailId
+							}).remove((err, docs) => {
+								if (err) {
+									res.json({
+										"result": false,
+										"dev": err,
+										"reason": 'Invalid',
+										"message": "something went wrong, Please try again."
+									});
+								} else {
+									res.json({
+										result: false,
+										reason: 'Invalid',
+										message: 'you have enter invalid or wrong email  id so please register again.'
+									});
+								}
+							})
 						}
-					})
+					});
 				}
 			})
 		]);
@@ -1614,20 +1668,45 @@ class AdminController {
 				if (!hashPwd) {
 					res.json({
 						result: false,
+						reason: 'incorrect pswd',
 						message: 'Old Password is Incorrect'
 					});
 				} else {
-					var pwd = base.hashPassword(req.body.password);
-					user.password = pwd;
-					user.loginStatus = req.body.loginStatus;
-					user.save(function (err) {
-						if (err) {
-							console.log(err);
-						} else {
-							res.json({
-								result: true,
-								message: 'Password Change Successfully'
+					quickemailverification.verify(user.emailId, function (err, response) {
+						console.log("Emai id in change pswd:", user.emailId, 'res:', response.body.result);
+						if (response.body.result == 'valid') {
+							var pwd = base.hashPassword(req.body.password);
+							user.password = pwd;
+							user.loginStatus = req.body.loginStatus;
+							user.save(function (err) {
+								if (err) {
+									console.log(err);
+								} else {
+									res.json({
+										result: true,
+										message: 'Password Change Successfully'
+									});
+								}
 							});
+						} else {
+							mongo.register.find({
+								emailId: user.emailId
+							}).remove((err, docs) => {
+								if (err) {
+									res.json({
+										"result": false,
+										"dev": err,
+										"reason": 'Invalid',
+										"message": "something went wrong, Please try again."
+									});
+								} else {
+									res.json({
+										result: false,
+										reason: 'Invalid',
+										message: 'Your email id is not valid, So please register again to'
+									});
+								}
+							})
 						}
 					});
 				}
@@ -1642,7 +1721,7 @@ class AdminController {
 			if (user) {
 				res.json({
 					result: true,
-					message: 'Email Alredy there',
+					message: 'Email Already Registered',
 					_id: user._id
 				});
 			} else {
@@ -1838,7 +1917,7 @@ class AdminController {
 			} else {
 				// console.log(docs);
 				// res.redirect('http://localhost:4200/response/' + req.body.mihpayid + '');
-				res.redirect('http://www.skillsgrow.com/response/' + req.body.mihpayid + '');
+				res.redirect('https://www.skillsgrow.com/response/' + req.body.mihpayid + '');
 			}
 		});
 	}
@@ -2062,7 +2141,7 @@ class AdminController {
 				_id: req.params.id
 			}, {
 				timeline: 1,
-				categoryId:1
+				categoryId: 1
 			})
 			.populate([{
 				path: 'timeline',
