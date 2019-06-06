@@ -26,6 +26,10 @@ var https = require('https');
 var httpServer = http.createServer(app);
 // var httpsServer = https.createServer(credentials, app);
 
+// db.connectToServer(function (err) {
+// 	new ApiRoutes().routes(app);
+// });
+
 // Set header
 app.use(function (req, res, next) {
 
@@ -44,19 +48,31 @@ app.use(function (req, res, next) {
 
 	// Pass to next layer of middleware
 	next();
-}
-);
+});
 
-app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
+app.use(bodyParser.urlencoded({
+	extended: false,
+	limit: '50mb'
+}));
 
 // parse application/json
-app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.json({
+	limit: '50mb'
+}));
 
 // parse application/x-www-form-urlencoded
 
 app.use('/upload', express.static(__dirname + '/upload'));
 
 new ApiRoutes().routes(app);
+
+// process.stdout.on('error', function (err) {
+// 	console.log("===========coming inside process.stdout.on============")
+// 	if (err.code == "EPIPE") {
+// 		console.log("===========coming inside EPIPE============")
+// 		process.exit(0);
+// 	}
+// });
 
 const server = app.listen(port);
 //httpServer.listen(8443);

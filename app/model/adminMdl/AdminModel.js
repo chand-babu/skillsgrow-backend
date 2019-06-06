@@ -370,6 +370,128 @@ class AdminModel {
 		});
 	}
 
+	addBlog(data) {
+		return new Promise((resolve, reject) => {
+			mongo.blog.create(data, (err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					reject(result);
+				} else {
+					result = {
+						"result": true,
+						"data": docs
+					};
+					// console.log("result====>",result)
+					resolve(result);
+				}
+			})
+		});
+	}
+
+	storeBlogComment(data) {
+		return new Promise((resolve, reject) => {
+			mongo.blogDiscussionForums.create(data, (err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					reject(result);
+				} else {
+					result = {
+						"result": true,
+						"data": docs
+					};
+					// console.log("result====>", docs._id)
+					resolve(result);
+				}
+			})
+		});
+	}
+
+	updateBlog(data) {
+		return new Promise((resolve, reject) => {
+			mongo.blog.update({
+				_id: data._id
+			}, {
+				$set: data
+			}, (err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					//console.log(result);
+					reject(result);
+				} else {
+					result = {
+						"result": true,
+						"data": docs
+					};
+					console.log('update blog', result);
+					resolve(result);
+				}
+			})
+		});
+	}
+
+	blogList() {
+		return new Promise((resolve, reject) => {
+			mongo.blog.find()
+				.sort({
+					_id: -1
+				})
+				.exec((err, docs) => {
+					if (err) {
+						result = {
+							"result": false,
+							"dev": err,
+							"message": "something went wrong"
+						};
+						reject(result);
+					} else {
+						result = {
+							"result": true,
+							"data": docs
+						};
+						resolve(result);
+					}
+				})
+		});
+	}
+
+	blogCommentList() {
+		return new Promise((resolve, reject) => {
+			mongo.blogDiscussionForums.find()
+				.sort({
+					_id: -1
+				})
+				.exec((err, docs) => {
+					if (err) {
+						result = {
+							"result": false,
+							"dev": err,
+							"message": "something went wrong"
+						};
+						reject(result);
+					} else {
+						result = {
+							"result": true,
+							"data": docs
+						};
+						resolve(result);
+					}
+				})
+		});
+	}
+
+
 	updateCategory(data) {
 		return new Promise((resolve, reject) => {
 			console.log(data);
@@ -873,6 +995,62 @@ class AdminModel {
 						"data": docs
 					};
 					//console.log(result);
+					resolve(result);
+				}
+			})
+		});
+	}
+
+	listBlog() {
+		return new Promise((resolve, reject) => {
+			mongo.blog.find({
+					active: true
+				})
+				.sort({
+					_id: -1
+				})
+				.exec(function (err, docs) {
+					if (err) {
+						result = {
+							"result": false,
+							"dev": err,
+							"message": "something went wrong"
+						};
+						//console.log(result);
+						reject(result);
+					} else {
+						result = {
+							"result": true,
+							"data": docs
+						};
+						// console.log(result);
+						resolve(result);
+					}
+				})
+		});
+	}
+
+	listCategoriesTitle() {
+		return new Promise((resolve, reject) => {
+			mongo.category.find({
+				categoryType: 0
+			}, {
+				categoryName: 1
+			}, (err, docs) => {
+				if (err) {
+					result = {
+						"result": false,
+						"dev": err,
+						"message": "something went wrong"
+					};
+					//console.log(result);
+					reject(result);
+				} else {
+					result = {
+						"result": true,
+						"data": docs
+					};
+					// console.log(result);
 					resolve(result);
 				}
 			})
@@ -1497,15 +1675,15 @@ class AdminModel {
 				if (err) {
 					result = {
 						"result": false,
-						"dev": err,
+						"data": err,
 						"message": "something went wrong"
 					};
 					reject(result);
 				} else {
 					result = {
 						"result": true,
-						"data": "Account Added Please Check Your Email For Activation",
-						"id": docs._id
+						"message": "Please check your email for account activation !!!",
+						"data": docs
 					}
 					resolve(result);
 				}
@@ -1770,7 +1948,6 @@ class AdminModel {
 												}
 											}, function (err4) {
 												if (!err4) {
-													console.log("&&coming&SURAJ")
 													topicData.questions.filter((questionsData) => {
 														if (questionsData._id) {
 															questionsId.push(questionsData._id)
@@ -1781,9 +1958,7 @@ class AdminModel {
 														'_id': topId
 													}, (topicfindErr, topicDocsData) => {
 														if (!topicfindErr) {
-															console.log("^^^44444", topicDocsData[0].questions)
 															for (var id of topicDocsData[0].questions) {
-																console.log(id, "^^^^", questionsId.includes(id.toString()))
 																if (!questionsId.includes(id.toString())) {
 																	self.deleteQestion(id);
 																}

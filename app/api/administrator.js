@@ -59,47 +59,6 @@ router.post("/add-category", tokenAuth, function (req, res) {
     new AdminController().addCategory(req, res);
 });
 
-router.post("/add-blog", tokenAuth, function (req, res) {
-    new AdminController().addBlog(req, res);
-});
-
-router.post("/update-blog", tokenAuth, function (req, res) {
-    new AdminController().updateBlog(req, res);
-});
-
-router.get("/check-blog-name/:blogName", tokenAuth, function (req, res, next) {
-    new AdminController().checkBlogNameExistOrNot(req, res);
-});
-
-router.get("/blog-list", productionOrDevelopment, function (req, res) {
-    new AdminController().blogList(req, res);
-});
-
-router.get("/blog-comment-list", productionOrDevelopment, function (req, res) {
-    new AdminController().blogCommentList(req, res);
-});
-
-router.put("/updateBlogStatus", productionOrDevelopment, function (req, res) {
-    new AdminController().blogActiveInactive(req, res);
-});
-
-router.put("/updateBlogCommentStatus", productionOrDevelopment, function (req, res) {
-    new AdminController().blogCommentActiveInactive(req, res);
-});
-
-router.delete("/blog-delete/:id", productionOrDevelopment, function (req, res) {
-    new AdminController().blogDelete(req, res);
-});
-
-router.delete("/blog-comment-delete/:id", productionOrDevelopment, function (req, res) {
-    new AdminController().deleteBlogComment(req, res);
-});
-
-router.post("/storeBlogComment", productionOrDevelopment, function (req, res) {
-    new AdminController().storeBlogComment(req, res);
-});
-
-
 router.put("/update-category", tokenAuth, function (req, res) {
     new AdminController().updateCategory(req, res);
 });
@@ -143,14 +102,6 @@ router.get("/list-course", tokenAuth, function (req, res) {
     new AdminController().listCourse(req, res);
 });
 
-router.get("/list-blog", productionOrDevelopment, function (req, res) {
-    new AdminController().listBlog(req, res);
-});
-
-router.get("/list-categoriesInBlogPage", productionOrDevelopment, function (req, res) {
-    new AdminController().listCategoriesTitle(req, res);
-});
-
 router.get("/get-course-details/:courseid", tokenAuth, function (req, res) {
     new AdminController().getCourse(req, res);
 });
@@ -191,7 +142,6 @@ router.put("/update-topic", tokenAuth, function (req, res) {
     new AdminController().updateTopic(req, res);
 });
 
-
 router.get("/list-topic", tokenAuth, function (req, res) {
     new AdminController().listTopic(req, res);
 });
@@ -227,7 +177,6 @@ router.put("/update-learning", tokenAuth, function (req, res) {
 /* frontend API */
 
 router.post("/web-register", function (req, res) {
-    console.log('============req in register=========',req.body);
     new AdminController().webRegister(req, res);
 });
 
@@ -316,7 +265,6 @@ router.post("/discussion-forums", productionOrDevelopment, function (req, res, n
     new AdminController().discussionForums(req, res, next);
 });
 
-
 router.get("/discussion-forums/:courseId", productionOrDevelopment, function (req, res, next) {
     new AdminController().getDiscussionForums(req, res, next);
 });
@@ -336,7 +284,6 @@ router.get("/check-email/:emailId", productionOrDevelopment, function (req, res,
 router.get("/check-course-name/:courseName", productionOrDevelopment, function (req, res, next) {
     new AdminController().checkCourseNameExistOrNot(req, res);
 });
-
 
 router.put("/course-faq", productionOrDevelopment, function (req, res, next) {
     new AdminController().courseFaq(req, res);
@@ -414,24 +361,6 @@ router.get("/findCourseByName/:courseName", productionOrDevelopment, function (r
     new AdminController().getCourseByName(req, res);
 });
 
-router.get("/findBlogByName/:blogName", productionOrDevelopment, function (req, res) {
-    new AdminController().getBlogByName(req, res);
-});
-
-router.get("/findBlogsByCategory/:categoryId", productionOrDevelopment, function (req, res) {
-    new AdminController().findBlogsByCategory(req, res);
-});
-
-router.get("/getCommentMessageOfBlog/:blogId", productionOrDevelopment, function (req, res) {
-    new AdminController().getCommentMessageOfBlog(req, res);
-});
-
-router.get("/findBestScoreBaseOnCourseId/:courseId", productionOrDevelopment, function (req, res) {
-    new AdminController().getBestScoreBaseOnCourseId(req, res);
-});
-
-
-
 router.get("/category-name", productionOrDevelopment, function (req, res) {
     new AdminController().getCategoryName(req, res);
 });
@@ -475,20 +404,6 @@ router.delete("/rolls-permissions/:id", productionOrDevelopment, function (req, 
 
 router.put("/view-trending-course", productionOrDevelopment, function (req, res) {
     new AdminController().trandingCourse(req, res);
-});
-
-router.post("/storeSpendTimePerCourse", productionOrDevelopment, function (req, res) {
-    new AdminController().updateHours(req, res);
-});
-
-
-
-router.post("/getSpendTimePerCourse", productionOrDevelopment, function (req, res) {
-    new AdminController().getHours(req, res);
-});
-
-router.post("/getSpendTimeOfactiveCourse", productionOrDevelopment, function (req, res) {
-    new AdminController().getSumOfAllCourseHours(req, res);
 });
 
 router.post("/testScriptForErolledUser", productionOrDevelopment, function (req, res) {

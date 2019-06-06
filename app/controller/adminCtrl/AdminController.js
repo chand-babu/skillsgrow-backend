@@ -8,7 +8,7 @@ var mongo = require("../../config/schema");
 var url = 'https://skillsgrow.com/'; /* 'https://skillsgrow.com/' */
 var express = require("express");
 //var sharp = require('sharp');
-var emailExistence = require('email-existence');
+// var emailExistence = require('email-existence');
 /* plugin for forgot password */
 var session = require('express-session')
 var nodemailer = require('nodemailer');
@@ -28,12 +28,15 @@ var smtpTransport = nodemailer.createTransport({
 	secure: 'true',
 	auth: {
 		user: 'admin@skillsgrow.com', // 'shrikumar01@gmail.com',//'!!! YOUR SENDGRID USERNAME !!!',
-		pass: '$killsgrow123' // 'enter$2020'//'!!! YOUR SENDGRID PASSWORD !!!'
+		// pass: '$killsgrow123' // 'enter$2020'//'!!! YOUR SENDGRID PASSWORD !!!'
+		pass: 'skillsgrow321'
 	}
 });
 
-let quickemailverification = require('quickemailverification').client('1b612ed679085008364e754a06e817ea11e7e2c951f2fe6cdd8e6861a830').quickemailverification();
-
+// let quickemailverification = require('quickemailverification').client('1b612ed679085008364e754a06e817ea11e7e2c951f2fe6cdd8e6861a830').quickemailverification();
+//My api key
+let quickemailverification = require('quickemailverification').client('c1e5c2b35fc47a6e401d81a418dcfa0fbf8371d3bbbe8fe63a37b6f893b1').quickemailverification();
+//Client Api key
 var controller = {};
 var result = {};
 
@@ -355,6 +358,155 @@ class AdminController {
 			});
 	}
 
+	addBlog(req, res) {
+		var data = {
+			'categoryId': req.body.categoryId,
+			'blogName': req.body.blogName,
+			'blogImage': req.body.image,
+			'shortDescription': req.body.shortDescription,
+			'description': req.body.description,
+			'blogVideo': req.body.video,
+			'status': req.body.status,
+			"active": req.body.active
+		};
+
+		this.admin.addBlog(data)
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject)
+			});
+	}
+
+	storeBlogComment(req, res) {
+		var data = {
+			'blogId': req.body.blogId,
+			'userName': req.body.messageDetails.userName,
+			'userEmail': req.body.messageDetails.userEmail,
+			'userWebsiteUrl': req.body.messageDetails.userWebsiteUrl,
+			'chatMessage': req.body.messageDetails.userMessage,
+			'parentId': req.body.parentId,
+			"active": req.body.messageDetails.active
+		};
+
+		this.admin.storeBlogComment(data)
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject)
+			});
+	}
+
+	getBlogByName(req, res) {
+		// console.log('name=====', req.params.blogName)
+		mongo.blog.find({
+				blogName: {
+					$regex: new RegExp('^' + req.params.blogName.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '$', 'i')
+				}
+			})
+			.populate([{
+				path: 'categoryId',
+				select: {
+					'categoryName': 1
+				}
+			}])
+			.exec((err, data) => {
+				if (err) {
+					res.json({
+						"result": false,
+						"message": "something went wrong",
+					});
+				} else {
+					res.json({
+						"result": true,
+						"data": data
+					});
+				}
+			})
+	}
+
+	getCommentMessageOfBlog(req, res) {
+		mongo.blogDiscussionForums.find({
+				blogId: req.params.blogId,
+				active: true
+			})
+			// .populate([{
+			// 	path: 'parentId',
+			// 		select: {
+			// 			'userName': 1
+			// 		}
+			// }])
+			.exec((err, messageDocs) => {
+				if (err) {
+					res.json({
+						"result": false,
+						"message": "something went wrong",
+					});
+				} else {
+					res.json({
+						"result": true,
+						"data": messageDocs
+					});
+				}
+			})
+	}
+
+	findBlogsByCategory(req, res) {
+		mongo.blog.find({
+				categoryId: req.params.categoryId,
+				active: true
+			})
+			.sort({
+				_id: -1
+			})
+			.exec((err, data) => {
+				if (err) {
+					res.json({
+						"result": false,
+						"message": "something went wrong",
+					});
+				} else {
+					res.json({
+						"result": true,
+						"data": data
+					});
+				}
+			})
+	}
+
+	updateBlog(req, res) {
+		var data = {
+			'_id': req.body._id,
+			'categoryId': req.body.categoryId,
+			'blogName': req.body.blogName,
+			'blogImage': req.body.image,
+			'shortDescription': req.body.shortDescription,
+			'description': req.body.description,
+			'blogVideo': req.body.video,
+			'status': req.body.status,
+			"active": req.body.active
+		};
+
+		this.admin.updateBlog(data)
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject)
+			});
+	}
+
 	updateCategory(req, res) {
 		var data = {
 			'id': req.body.id,
@@ -406,6 +558,8 @@ class AdminController {
 				res.send(reject)
 			});
 	}
+
+
 
 	listCategoryType(req, res) {
 		let status = req.params.value;
@@ -542,6 +696,32 @@ class AdminController {
 			});
 	}
 
+	listBlog(req, res) {
+		this.admin.listBlog()
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject);
+			});
+	}
+
+	listCategoriesTitle(req, res) {
+		this.admin.listCategoriesTitle()
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject);
+			});
+	}
+
 	getCategoryCourseList(req, res) {
 		this.admin.getCategoryCourseList(req)
 			.then((response) => {
@@ -639,7 +819,7 @@ class AdminController {
 					res.send(response);
 				}
 			}, (reject) => {
-				res.send(reject)
+				res.send(reject);
 			});
 	}
 
@@ -867,6 +1047,61 @@ class AdminController {
 			});
 	}
 
+	// webRegister(req, res) {
+	// 	var pwd = base.hashPassword(req.body.password);
+	// 	var temptoken = jwt.sign({
+	// 		userName: req.body.userName,
+	// 		emailId: req.body.emailId
+	// 	}, tokenKey, {
+	// 		expiresIn: '24h'
+	// 	});
+	// 	var data = {
+	// 		"profilePic": req.body.profilePic,
+	// 		"userName": req.body.userName,
+	// 		"emailId": req.body.emailId,
+	// 		"phone": req.body.phone,
+	// 		"password": pwd,
+	// 		"status": req.body.status,
+	// 		"createdOn": req.body.createdOn,
+	// 		"temporaryToken": temptoken,
+	// 		"referId": req.body.referId
+	// 	};
+	// 	quickemailverification.verify(req.body.emailId, function (err, response) {
+	// 		console.log("Email id:", req.body.emailId, 'res:', response.body.result);
+	// 		if (response.body.result == 'valid') {
+	// 			model.frontendRegister(data)
+	// 				.then((response) => {
+	// 					if (response.result) {
+	// 						var mailOptions = {
+	// 							to: req.body.emailId,
+	// 							from: 'admin@skillsgrow.com',
+	// 							subject: 'Account Activation Link',
+	// 							text: 'Click on this to link to activate your account .\n\n' +
+	// 								url + 'activate/' + temptoken,
+	// 							html: 'Click on this to link to activate your account . </br>' +
+	// 								'<a href="' + url + 'activate/' + temptoken + '">' + url + 'activate/</a>'
+	// 						};
+	// 						// smtpTransport.sendMail(mailOptions, function (err, info) {
+	// 						// 	if (err) {
+	// 						// 		console.log(err);
+	// 						// 	}
+	// 						// });
+	// 						res.send(response);
+	// 					} else {
+	// 						res.send(response);
+	// 					}
+	// 				}, (reject) => {
+	// 					res.send(reject)
+	// 				});
+	// 		} else {
+	// 			res.json({
+	// 				result: false,
+	// 				message: 'Please given a valid Mail Id'
+	// 			});
+	// 		}
+	// 	});
+	// }
+
 	webRegister(req, res) {
 		var pwd = base.hashPassword(req.body.password);
 		var temptoken = jwt.sign({
@@ -889,30 +1124,36 @@ class AdminController {
 		quickemailverification.verify(req.body.emailId, function (err, response) {
 			console.log("Email id:", req.body.emailId, 'res:', response.body.result);
 			if (response.body.result == 'valid') {
-				model.frontendRegister(data)
-					.then((response) => {
-						if (response.result) {
-							var mailOptions = {
-								to: req.body.emailId,
-								from: 'admin@skillsgrow.com',
-								subject: 'Account Activation Link',
-								text: 'Click on this to link to activate your account .\n\n' +
-									url + 'activate/' + temptoken,
-								html: 'Click on this to link to activate your account . </br>' +
-									'<a href="' + url + 'activate/' + temptoken + '">' + url + 'activate/</a>'
-							};
-							smtpTransport.sendMail(mailOptions, function (err, info) {
-								if (err) {
-									console.log(err);
+				var mailOptions = {
+					to: req.body.emailId,
+					from: 'admin@skillsgrow.com',
+					subject: 'Account Activation Link',
+					text: 'Click on this to link to activate your account .\n\n' +
+						url + 'activate/' + temptoken,
+					html: 'Click on this to link to activate your account . </br>' +
+						'<a href="' + url + 'activate/' + temptoken + '">' + url + 'activate/</a>'
+				};
+				smtpTransport.sendMail(mailOptions, function (err, info) {
+					if (err) {
+						console.log('mail err', err);
+						res.json({
+							result: false,
+							message: 'Something worng in mail send.Please register again.'
+						});
+					} else {
+						console.log('mail info', info)
+						model.frontendRegister(data)
+							.then((response) => {
+								if (response.result) {
+									res.send(response);
+								} else {
+									res.send(response);
 								}
+							}, (reject) => {
+								res.send(reject)
 							});
-							res.send(response);
-						} else {
-							res.send(response);
-						}
-					}, (reject) => {
-						res.send(reject)
-					});
+					}
+				});
 			} else {
 				res.json({
 					result: false,
@@ -950,10 +1191,10 @@ class AdminController {
 				} else {
 					res.send(response);
 				}
-				mongoose.disconnect();
+				//mongoose.disconnect();
 			}, (reject) => {
 				res.send(reject);
-				mongoose.disconnect();
+				//mongoose.disconnect();
 			});
 	}
 
@@ -966,10 +1207,10 @@ class AdminController {
 				} else {
 					res.send(response);
 				}
-				mongoose.disconnect();
+				//mongoose.disconnect();
 			}, (reject) => {
 				res.send(reject);
-				mongoose.disconnect();
+				//mongoose.disconnect();
 			});
 	}
 
@@ -982,10 +1223,10 @@ class AdminController {
 				} else {
 					res.send(response);
 				}
-				mongoose.disconnect();
+				//mongoose.disconnect();
 			}, (reject) => {
 				res.send(reject);
-				mongoose.disconnect();
+				//mongoose.disconnect();
 			});
 	}
 
@@ -997,10 +1238,10 @@ class AdminController {
 				} else {
 					res.send(response);
 				}
-				mongoose.disconnect();
+				//mongoose.disconnect();
 			}, (reject) => {
 				res.send(reject);
-				mongoose.disconnect();
+				//mongoose.disconnect();
 			});
 	}
 
@@ -1756,6 +1997,97 @@ class AdminController {
 		})
 	}
 
+	checkBlogNameExistOrNot(req, res) {
+		mongo.blog.findOne({
+			blogName: {
+				$regex: new RegExp('^' + req.params.blogName.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '$', 'i')
+			}
+		}, {
+			_id: 1
+		}, function (error, user) {
+			if (user) {
+				res.json({
+					result: true,
+					message: 'Blog name already exist',
+					_id: user._id
+				});
+			} else {
+				res.json({
+					result: false,
+					message: 'Blog name not found'
+				});
+			}
+		})
+	}
+
+	blogList(req, res) {
+		this.admin.blogList()
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject)
+			});
+	}
+
+	blogCommentList(req, res) {
+		this.admin.blogCommentList()
+			.then((response) => {
+				if (response.result) {
+					res.send(response);
+				} else {
+					res.send(response);
+				}
+			}, (reject) => {
+				res.send(reject)
+			});
+	}
+
+	blogActiveInactive(req, res) {
+		mongo.blog.update({
+			_id: req.body._id
+		}, {
+			$set: req.body
+		}, (err, docs) => {
+			if (err) {
+				res.json({
+					"result": false,
+					"message": "something went wrong"
+				});
+			} else {
+				res.json({
+					"result": true,
+					"mesage": "change successfully",
+					"data": docs
+				});
+			}
+		})
+	}
+
+	blogCommentActiveInactive(req, res) {
+		mongo.blogDiscussionForums.update({
+			_id: req.body._id
+		}, {
+			$set: req.body
+		}, (err, docs) => {
+			if (err) {
+				res.json({
+					"result": false,
+					"message": "something went wrong"
+				});
+			} else {
+				res.json({
+					"result": true,
+					"mesage": "change successfully",
+					"data": docs
+				});
+			}
+		})
+	}
+
 	courseFaq(req, res) {
 		mongo.course.findOne({
 			_id: req.body.courseId
@@ -1907,7 +2239,7 @@ class AdminController {
 	}
 
 	payuResponse(req, res) {
-		// console.log(req.body);
+		console.log(req.body);
 		// req.body.status = "success";
 
 		// console.log('=====', req.body.status);
@@ -2085,7 +2417,11 @@ class AdminController {
 				phone: 1,
 				profilePic: 1,
 				courseEnrolled: 1
-			}).lean()
+			})
+			.sort({
+				_id: -1
+			})
+			.lean()
 			.exec((err, user) => {
 				if (err) {
 					res.json({
@@ -2221,6 +2557,272 @@ class AdminController {
 			})
 	} //modified by nandita
 
+
+	blogDelete(req, res) {
+		mongo.blog.find({
+			'_id': req.params.id
+		}).remove((err, blogDeleteDocs) => {
+			if (!err) {
+				mongo.blogDiscussionForums.find({
+					'blogId': req.params.id
+				}).remove((err, blogCommentDeleteDocs) => {
+					if (!err) {
+						res.json({
+							"result": true,
+							"mesage": "delete successfully"
+						});
+					}
+				})
+			}
+		})
+	}
+
+	// deleteBlogComment(req, res) {
+	// 	let query = {
+	// 		$or: [{
+	// 			_id: req.params.id
+	// 		}, {
+	// 			parentId: req.params.id
+	// 		}]
+	// 	};
+	// 	mongo.blogDiscussionForums.findOne({
+	// 			_id: req.params.id
+	// 		}).exec((err, docs) => {
+	// 		if (!err) {
+	// 			docs.remove(function (err) {
+	// 				//content is removed, and the 'remove' pre/post events are emitted
+	// 				res.json({
+	// 					"result": true,
+	// 					"mesage": "delete successfully",
+	// 					"data": blogCommentDeleteDocs.resullt
+	// 				});
+	// 			});
+
+	// 		}
+	// 	})
+
+	// }
+
+
+	deleteBlogComment(req, res) {
+		this.findChildComments(req.params.id);
+		res.json({
+			"result": true,
+			"mesage": "delete successfully"
+		});
+	}
+	findChildComments(id) {
+		let query = {
+			$or: [{
+				_id: id
+			}, {
+				parentId: id
+			}]
+		};
+		mongo.blogDiscussionForums.find(query).exec((err, docs) => {
+			docs.filter((data) => {
+				this.removeBlogComments(data._id)
+			});
+
+		})
+
+
+	}
+
+	removeBlogComments(id) {
+		mongo.blogDiscussionForums.find({
+			_id: id
+		}).remove((err, docs) => {
+			if (!err) {
+				this.findChildComments(id);
+			}
+		})
+	}
+
+
+
+
+	updateHours(req, res) {
+		let timeSpend = req.body.hourSpent;
+		mongo.enrolledUser.findOne({
+			userId: req.body.userId,
+			courseId: req.body.courseId
+		}).select().exec(function (err, docs) {
+			if (err) {
+				res.json({
+					"result": false,
+					"message": "something went wrong"
+				});
+			} else {
+				if (docs.hourSpent && docs.hourSpent != 'undefined') {
+					timeSpend += docs.hourSpent;
+					// console.log("++++++timeSpend+++++", timeSpend, typeof timeSpend)
+				}
+
+				mongo.enrolledUser.update({
+					_id: docs._id
+				}, {
+					$set: {
+						hourSpent: timeSpend
+					}
+				}, (err, updateDocs) => {
+					if (updateDocs.nModified == 1) {
+						console.log('updateDocs', updateDocs)
+						res.json({
+							"result": true,
+							"mesage": "time updated"
+						});
+					}
+				})
+			}
+		})
+	}
+
+	getHours(req, res) {
+		mongo.enrolledUser.findOne({
+				userId: req.body.userId,
+				courseId: req.body.courseId
+			})
+			.select().exec(function (err, docs) {
+				if (err) {
+					res.json({
+						"result": false,
+						"message": "something went wrong"
+					});
+				} else {
+					// console.log('docs',docs)
+					res.json({
+						"result": true,
+						"data": {
+							'hourSpent': docs.hourSpent
+						}
+					});
+				}
+			})
+	}
+
+	getSumOfAllCourseHours(req, res) {
+		// console.log("++++*888888888", req.body.courseIds)
+		let totalHours = 0;
+		let totalCourseHours = 0;
+		async.parallel([
+			function (cb1) {
+				async.forEachSeries(req.body.courseIds, function (courseId, CB1) {
+					mongo.enrolledUser.findOne({
+						userId: req.body.userId,
+						courseId: courseId
+					}).select().exec(function (err, docs) {
+						if (err) {
+							cb1({
+								"result": false,
+								"err": err,
+								"message": "something went wrong"
+							}, null)
+						} else {
+							if (docs && docs.hourSpent != undefined) {
+								totalHours += docs.hourSpent;
+							}
+							CB1();
+						}
+					})
+				}, function (err1) {
+					if (err1) {
+						cb1({
+							"result": false,
+							"err1": err1,
+							"message": "something went wrong"
+						}, null)
+					} else {
+						cb1(null, {
+							'totalSpentHours': totalHours
+						});
+					}
+				});
+			},
+			function (cb2) {
+				// cb2(null, {
+				// 	'totalCourseHours': totalCourseHours
+				// });
+				async.forEachSeries(req.body.courseIds, function (courseId, CB2) {
+					// console.log('courseId===========>', courseId)
+					mongo.enrolledUser.find({
+							courseId: courseId
+						})
+						.populate([{
+							path: 'userId',
+							select: {
+								'courseEnrolled._id': 1,
+								'courseEnrolled.courseProgress': 1,
+								'courseEnrolled.timeline': 1
+							}
+						}])
+						.exec((err, data) => {
+							if (err) {
+								cb2({
+									"result": false,
+									"err": err,
+									"message": "something went wrong"
+								}, null)
+							} else {
+								let totalTimeForCourse = 0;
+								data.filter((enrollData) => {
+									let totalTime = 0;
+									enrollData.userId.courseEnrolled.filter((courseData) => {
+										if (courseData._id === courseId) {
+											// console.log('couse88888888888888@@@@@@@',courseData._id)
+											courseData.timeline.filter((timelineData) => {
+												timelineData.topics.filter((topicData) => {
+													totalTime += topicData.timing;
+												})
+											})
+										}
+									})
+									totalTimeForCourse = totalTime;
+									// console.log("+++++++totalTimeForCourse++++++++", totalTimeForCourse)
+								});
+								totalCourseHours += totalTimeForCourse;
+								// console.log("*********************End******************")
+								CB2();
+							}
+						})
+				}, function (err2) {
+					if (err2) {
+						cb2({
+							"result": false,
+							"err2": err2,
+							"message": "something went wrong"
+						}, null)
+
+					} else {
+						// console.log('final totalCourseHours', totalCourseHours)
+						cb2(null, {
+							'totalCourseHours': totalCourseHours
+						});
+					}
+				});
+
+			}
+		], function (err, results) {
+			// console.log(results, 'resultssssss')
+			if (err) {
+				res.json({
+					"result": false,
+					"err": err,
+					"message": "something went wrong"
+				});
+			} else {
+				res.json({
+					"result": true,
+					"data": {
+						'totalSpentHours': results[0].totalSpentHours,
+						'totalCourseHours': results[1].totalCourseHours
+					}
+				});
+			}
+		});
+
+	}
+
 	getCourseById(req, res) {
 		mongo.course.find({
 				_id: req.params.id
@@ -2344,6 +2946,75 @@ class AdminController {
 					res.json({
 						"result": true,
 						"data": data
+					});
+				}
+			})
+	}
+
+	getBestScoreBaseOnCourseId(req, res) {
+		let highestScore = 0;
+		let totalTimeForCourse = 0;
+		let totalQes = 0;
+		let attendTestUser = 0;
+
+		mongo.enrolledUser.find({
+				courseId: req.params.courseId
+			})
+			.populate([{
+				path: 'userId',
+				select: {
+					'courseEnrolled._id': 1,
+					'courseEnrolled.courseProgress': 1,
+					'courseEnrolled.timeline': 1
+				}
+			}])
+			.exec((err, data) => {
+				if (err) {
+					res.json({
+						"result": false,
+						"message": "something went wrong",
+					});
+				} else {
+					data.filter((enrollData) => {
+						let totalMarkOfUser = 0;
+						let totalTime = 0;
+						let totalQestionsLength = 0;
+						let status = false;
+						enrollData.userId.courseEnrolled.filter((courseData) => {
+							// if (courseData._id === req.params.courseId && courseData.courseProgress == 100) {
+							if (courseData._id === req.params.courseId) {
+								courseData.timeline.filter((timelineData) => {
+									timelineData.topics.filter((topicData) => {
+										if (topicData.markScore) {
+											status = true;
+											totalMarkOfUser += topicData.markScore;
+										}
+										// totalMarkOfUser += (topicData.markScore) ? topicData.markScore : 0;
+										// totalMarkOfUser += topicData.markScore
+										totalTime += topicData.timing;
+										totalQestionsLength += (topicData.questionsLength != 'undefined') ? topicData.questionsLength : 0;
+									})
+								})
+							}
+						})
+						if (status) {
+							attendTestUser++;
+						}
+						if (highestScore < totalMarkOfUser) {
+							highestScore = totalMarkOfUser;
+						}
+						// console.log("totalSore=============>", totalMarkOfUser)
+						totalTimeForCourse = totalTime;
+						totalQes = totalQestionsLength;
+					});
+					res.json({
+						"result": true,
+						"data": {
+							highestScore: highestScore,
+							totalTimeForCourse: totalTimeForCourse,
+							totalQes: totalQes,
+							attendTestUser: attendTestUser
+						}
 					});
 				}
 			})
@@ -2918,8 +3589,8 @@ class AdminController {
 							})
 						}, function (err2) {
 							if (!err2) {
-								console.log("+++courseId++", courseId)
-								console.log("++timelineId+++", timelineId)
+								// console.log("+++courseId++", courseId)
+								// console.log("++timelineId+++", timelineId)
 								mongo.course.update({
 									_id: courseId
 								}, {
@@ -2991,173 +3662,10 @@ class AdminController {
 
 
 	testScript(req, res) {
-		console.log(req.body.courseId)
-		let timeId;
-		let topId;
-		let timelineId = [];
-		let topicsId = [];
-		let questionsId = [];
-		let data = {
-			authorDetails: [{
-				authorName: 'Nandita Naik',
-				authorEmail: 'nadita.prg@gmail.com',
-				authorPhone: '9611670845',
-				authorBiography: 'Sumanth works with the Instructional team to bring great content to more students and classrooms. He is a big fan of learning and teaching by using online technology and how it can bring employment opportunities to so many young students in India and all over the world.\n',
-				coursePrice: 'Free',
-				certificatePrice: 'Free'
-			}],
-			boostText: 'Learn and get Certificate Free',
-			categoryId: '5bb92ba29a8d2c489741bc96',
-			courseName: 'Node js',
-			description: '<p>Have you never programmed a computer before, and have been told that C is a good programming language to get started with.</p><p><strong>It is!</strong></p><p>Maybe you have some experience with other programming languages, but want to learn C.</p><p>The fact is, learning how to program in C is not only an excellent programming language to get started with, but it will also make you a better programmer in other computer languages!</p><h2><strong><u>What Will I Learn as a Beginner?</u></strong></h2><ul><li>Learn the Data types, Variables, and Operators.</li><li>Know how to write basic instructions and functions in C.</li><li>Decision making in C.</li><li>C standard library.</li><li>Loops in C.</li><li>C Preprocessor commands.</li><li>Learn Functions, Arrays, Strings, Structures in C.</li><li>most importantly pointers.</li></ul><h2><strong><u>Description:</u></strong></h2><p><strong>C</strong> is a high-level and general-purpose programming language that is ideal for developing firmware or portable applications. Originally intended for writing system software, C was developed at Bell Labs by Dennis Ritchie for the Unix Operating System in the early 1970s.</p><p>Ranked among the most widely used languages, C has a compiler for most computer systems and has influenced many popular languages – notably C++.</p><p>C belongs to the structured, procedural paradigms of languages. It is proven, flexible and powerful and may be used for a variety of different applications. Although high level, C and assembly language share many of the same attributes.</p><h2><strong><u>Requirements:</u></strong></h2><p>No programming experience.</p><h2><strong><u>Target audience?</u></strong></h2><p>Anyone who is looking to learn C language.</p>',
-			shortDescription: 'This course is meant to teach how to write programs to beginners of programming. It teaches how to get started with programming using C Language.',
-			imageLarge: '',
-			imageSmall: '',
-			video: '',
-			timeline: [{
-				title: 'Introduction',
-				topics: [{
-					description: "<p>sxsxsxsxsxsxsxsxsx</p>",
-					order: 0,
-					subTopics: "zxzxz",
-					timing: 33
-				}],
-				order: 0
-			}],
-			createdBy: '5c1b80b23bd70713241f5b0a',
-			status: 0
-		}
-		async.forEachSeries(data.timeline, function (item2, cb2) {
-			mongo.timeline.create({
-				title: item2.title,
-				order: item2.order
-			}, (err2, docs2) => {
-				if (err2) {
-					console.log('==2==', err2);
-				} else {
-					timeId = docs2._id;
-					timelineId.push(docs2._id);
-					console.log(timeId, '*****timeId*******', timelineId, '===')
-					async.forEachSeries(item2.topics, function (item3, cb3) {
-						mongo.topics.create({
-							description: item3.description,
-							order: item3.order,
-							subTopics: item3.subTopics,
-							timing: item3.timing
-						}, (err3, docs3) => {
-							if (err3) {
-								console.log('==3==', err3);
-							} else {
-								topId = docs3._id;
-								topicsId.push(docs3._id);
-								console.log(topId, '********topId*******', topicsId, '++')
-								async.forEachSeries(item3.questions, function (item4, cb4) {
-									mongo.questions.create(item4, (err4, docs4) => {
-										if (err4) {
-											console.log('==4==', err4);
-											cb4();
-										} else {
-											questionsId.push(docs4._id);
-											cb4();
-										}
-									})
-								}, function (err4) {
-									if (!err4) {
-										if (questionsId.length > 0) {
-											mongo.topics.update({
-												_id: topId
-											}, {
-												$set: {
-													questions: questionsId
-												}
-											}, (topicerr, topicdocs) => {
-												if (topicerr) {
-													console.log(topicerr);
-													cb3()
-												} else {
-													questionsId = [];
-													cb3();
-												}
-											})
-										} else {
-											cb3()
-										}
-									} else {
-										console.log("===err4===", err4)
-										cb3()
-									}
-								});
-							}
-						})
-					}, function (err3) {
-						if (!err3) {
-							console.log("+++timeId++", timeId)
-							console.log("++topicsId+++", topicsId)
-							if (topicsId.length > 0) {
-								mongo.timeline.update({
-									_id: timeId
-								}, {
-									$set: {
-										topics: topicsId
-									}
-								}, (timelineerr, timelinedocs) => {
-									if (timelineerr) {
-										console.log(timelineerr);
-										cb2()
-									} else {
-										console.log("timeId data updated")
-										topicsId = [];
-										cb2();
-									}
-								})
-							} else {
-								cb2()
-							}
-						} else {
-							console.log("===err3===", err3)
-							cb2()
-						}
-					});
-				}
-			})
-		}, function (err2) {
-			if (!err2) {
-				data.timeline = timelineId;
-				console.log("+++course++", data)
-
-				mongo.course.create(data, (err, docs) => {
-					if (err) {
-						result = {
-							"result": false,
-							"dev": err,
-							"message": "something went wrong"
-						};
-						console.log(result);
-						// reject(result);
-					} else {
-						mongo.category.find({
-							'_id': data.categoryId
-						}, (err, cat) => {
-							//console.log(data);
-							cat[0].course.push(docs._id);
-
-							cat[0].save((err) => {
-								if (err) {
-									console.log(err);
-								}
-							});
-						});
-						result = {
-							"result": true,
-							"data": docs
-						};
-						console.log(result);
-						// resolve(result);
-					}
-				})
-			} else {
-				console.log("====err2===", err2)
-			}
+		mongo.register.find({
+			'_id': req.body.userId
+		}).remove((err, docs) => {
+			console.log("docsssss", docs.result)
 		});
 	}
 

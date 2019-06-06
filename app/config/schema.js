@@ -25,6 +25,9 @@ collections.AUTHOR_DETAILS = 'authorDetails';
 collections.TIMELINE = 'timeline';
 collections.TOPICS = 'topics';
 collections.QUESTIONS = 'questions';
+collections.BLOG = 'blog';
+collections.BLOG_DISCUSSION_FORUMS = 'blogDiscussionForums';
+
 
 /* Fronted collections */
 collections.REGISTER = 'register';
@@ -131,6 +134,107 @@ var category = new Schema({
 });
 category.plugin(integerValidator);
 
+var blog = new Schema({
+	categoryId: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'category'
+	},
+	blogName: {
+		type: String,
+		required: true,
+		trim: true,
+		index: {
+			unique: true
+		}
+	},
+	shortDescription: String,
+	description: String,
+	blogImage: String,
+	blogVideo: String,
+	status: {
+		type: Number,
+		required: true,
+		integer: true
+	}, //default -0
+	active: Boolean,
+	createdOn: {
+		type: Date,
+		default: Date.now
+	},
+	// blogDiscussionForums: []
+});
+
+var blogDiscussionForums = new Schema({
+	blogId: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'blog'
+	},
+	// userId: {
+	// 	type: mongoose.Schema.Types.ObjectId,
+	// 	ref: 'register'
+	// },
+	userName: {
+		type: String,
+		required: true,
+		trim: true
+	},
+	userEmail: {
+		type: String,
+		required: true,
+		trim: true
+	},
+	userWebsiteUrl: String,
+	chatMessage: String,
+	// children: [],
+	parentId: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'blogDiscussionForums'
+	},
+	active: Boolean,
+	createdOn: {
+		type: Date,
+		default: Date.now
+	}
+}, {
+	versionKey: false,
+	usePushEach: true
+});
+
+
+// blogDiscussionForums.pre('remove', function (next) {
+// 	mongoose.models["blog"].remove({
+// 		parentId: this._id
+// 	}).exec();
+// 	next();
+// });
+
+// blogDiscussionForums.pre('remove', function (next) {
+// 	console.log('====blogDiscussionForums.pre=======')
+// 	mongoose.models["blogDiscussionForums"].findOneAndRemove({
+// 		'parentId': this._id
+// 	}, function (err, blog) {
+// 		if (blog) {
+// 			console.log('====blogDiscussionForums.pre=======', blog)
+// 			blog.remove();
+// 		}
+// 	});
+// 	next();
+// });
+
+// blogDiscussionForums.post('remove', function (next) {
+// 	console.log('====blogDiscussionForums.post=======')
+// 	mongoose.models["blogDiscussionForums"].findOneAndRemove({
+// 		'parentId': this._id
+// 	}, function (err, blog) {
+// 		if (blog) {
+// 			console.log('====blogDiscussionForums.post=======', blog)
+// 			blog.remove();
+// 		}
+// 	});
+// 	next();
+// });
+
+
 var course = new Schema({
 	authorDetails: [],
 	discussionForums: [],
@@ -194,7 +298,7 @@ var updatedCourse = new Schema({
 		type: String,
 		required: true
 	},
-	courseName:{
+	courseName: {
 		type: String,
 		trim: true
 	},
@@ -674,6 +778,9 @@ var enrolledUser = new Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'register'
 	},
+	hourSpent: {
+		type: Number
+	},
 	enrolledOn: {
 		type: Date
 	}
@@ -790,6 +897,9 @@ schemaObj.askQuestion = mongoose.model('askQuestion', askQuestion, collections.A
 schemaObj.publishSkillsgrowScheme = mongoose.model('publishSkillsgrowScheme', publishSkillsgrowScheme, collections.PUBLISHSKILLSGROWSCHEME);
 schemaObj.payuResponseScheme = mongoose.model('payuResponseScheme', payuResponseScheme, collections.PAYURESPONSESCHEME);
 schemaObj.rollsPermissions = mongoose.model('rollsPermissions', rollsPermissions, collections.ROLLS_PERMISSIONS);
+schemaObj.blog = mongoose.model('blog', blog, collections.BLOG);
+schemaObj.blogDiscussionForums = mongoose.model('blogDiscussionForums', blogDiscussionForums, collections.BLOG_DISCUSSION_FORUMS);
+
 module.exports = schemaObj;
 
 // testkey - chandbabu123
